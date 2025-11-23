@@ -127,9 +127,8 @@ function setupForm() {
         fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors', // CORS 우회
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            // headers removed for no-cors
+
             body: JSON.stringify(orderData)
         })
             .then(() => {
