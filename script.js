@@ -81,27 +81,53 @@ function setupForm() {
         e.preventDefault();
 
         // Gather Data
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
 
-        // Products
+        // Products (선택 사항)
         const brookie1Qty = form.querySelector('[name="brookie1_qty"]').value;
         const brookie1Option = form.querySelector('[name="brookie1_option"]').options[form.querySelector('[name="brookie1_option"]').selectedIndex].text;
         const brookie2Qty = form.querySelector('[name="brookie2_qty"]').value;
         const faceSetQty = form.querySelector('[name="faceset_qty"]').value;
 
         // Pickup
-        const pickupMethod = form.querySelector('input[name="pickup_method"]:checked')?.value === 'pickup' ? '매장 픽업' : '퀵 착불';
+        const pickupMethodElement = form.querySelector('input[name="pickup_method"]:checked');
+        const pickupMethod = pickupMethodElement?.value === 'pickup' ? '매장 픽업' : '퀵 착불';
         const pickupDate = document.getElementById('pickup_date').value;
         const pickupTime = document.getElementById('pickup_time').value;
 
         // Payment
-        const depositor = document.getElementById('depositor').value;
-        const amount = document.getElementById('amount').value;
+        const depositor = document.getElementById('depositor').value.trim();
+        const amount = document.getElementById('amount').value.trim();
         const total = document.getElementById('total-price').textContent;
 
-        const memo = document.getElementById('memo').value;
+        const memo = document.getElementById('memo').value; // 선택 사항
+
+        // ===== 필수 입력 검증 =====
+        const missingFields = [];
+
+        if (!name) missingFields.push('주문자 성함');
+        if (!email) missingFields.push('이메일');
+        if (!phone) missingFields.push('연락처');
+        if (!pickupMethodElement) missingFields.push('수령 방법');
+        if (!pickupDate) missingFields.push('픽업 날짜');
+        if (!pickupTime) missingFields.push('픽업 시간');
+        if (!depositor) missingFields.push('입금자명');
+        if (!amount) missingFields.push('입금 예정액');
+
+        // 이메일 형식 검증
+        if (email && !email.includes('@')) {
+            alert('올바른 이메일 주소를 입력해 주세요.');
+            return;
+        }
+
+        // 누락된 필드가 있을 경우
+        if (missingFields.length > 0) {
+            const fieldList = missingFields.join(', ');
+            alert(`다음 항목을 입력해 주세요:\n\n${fieldList}\n\n※ 상품 수량과 메모는 선택 사항입니다.`);
+            return;
+        }
 
 
         console.log('Preparing to send quote email...');
