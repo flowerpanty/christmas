@@ -183,6 +183,12 @@ function setupForm() {
             timestamp: timestamp
         };
 
+        // 버튼 비활성화 및 텍스트 변경
+        const submitBtn = form.querySelector('.submit-btn');
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = '전송 중...';
+
         // 고객에게 이메일 발송
         emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, customerEmailParams)
             .then(function (response) {
@@ -200,9 +206,12 @@ function setupForm() {
             .catch(function (error) {
                 console.error('Email sending failed:', error);
                 alert('견적서 이메일 전송에 실패했습니다. 다시 시도해 주세요.');
+            })
+            .finally(function () {
+                // 버튼 다시 활성화
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
             });
-
-
     });
 }
 
