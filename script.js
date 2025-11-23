@@ -103,51 +103,61 @@ function setupForm() {
 
         const memo = document.getElementById('memo').value;
 
-        console.log('Submitting order...');
 
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuwkutGtG3xUVgs3Qlp5NweTNkzW4Eii-DiUTfTndNyCX_UrvcilpImB3bOcaVrs-f/exec';
+        // 견적서 내용 생성
+        const quoteBody = `
+===========================================
+🎄 크리스마스 쿠키 주문 견적서 🎄
+===========================================
 
+📋 주문자 정보
+--------------------------------------------
+성함: ${name}
+이메일: ${email}
+연락처: ${phone}
 
-        const orderData = {
-            name: name,
-            email: email,
-            phone: phone,
-            brookie1Qty: brookie1Qty,
-            brookie1Option: brookie1Option,
-            brookie2Qty: brookie2Qty,
-            faceSetQty: faceSetQty,
-            totalPrice: total,
-            pickupMethod: pickupMethod,
-            pickupDate: pickupDate,
-            pickupTime: pickupTime,
-            depositor: depositor,
-            amount: amount,
-            memo: memo
-        };
+🍪 주문 상품
+--------------------------------------------
+- 브루키 1 (${brookie1Option}): ${brookie1Qty}개
+- 브루키 2: ${brookie2Qty}개
+- 페이스 세트: ${faceSetQty}개
 
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors', // CORS 우회
-            // headers removed for no-cors
+💰 결제 정보
+--------------------------------------------
+총 금액: ${total}
+입금자명: ${depositor}
+입금 예정액: ${amount}원
 
-            body: JSON.stringify(orderData)
-        })
-            .then(() => {
-                // no-cors 모드에서는 응답을 읽을 수 없지만
-                // testEmailAndSheets가 성공했으므로 백엔드는 정상 작동함
-                console.log('Order submitted! Check Google Sheets and emails.');
-                showModal();
-                form.reset();
-                document.getElementById('total-price').textContent = '0';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // CORS 오류여도 백엔드는 처리되었을 수 있음
-                console.log('Showing modal anyway - check Sheets and emails');
-                showModal();
-                form.reset();
-                document.getElementById('total-price').textContent = '0';
-            });
+🚗 수령 방법
+--------------------------------------------
+방식: ${pickupMethod}
+날짜: ${pickupDate}
+시간: ${pickupTime}
+
+📝 메모
+--------------------------------------------
+${memo || '없음'}
+
+===========================================
+본 견적서는 ${new Date().toLocaleString('ko-KR')}에 생성되었습니다.
+문의사항은 nahmsososochan@gmail.com 으로 연락 주세요.
+===========================================
+        `.trim();
+
+        // 고객용 이메일
+        const customerSubject = `[크리스마스 쿠키] ${name}님의 주문 견적서`;
+        const customerMailto = `mailto:${email}?cc=nahmsososochan@gmail.com&subject=${encodeURIComponent(customerSubject)}&body=${encodeURIComponent(quoteBody)}`;
+
+        // 이메일 클라이언트 열기
+        window.location.href = customerMailto;
+
+        console.log('Quote email opened! Check your email client.');
+
+        // 성공 모달 표시
+        showModal();
+        form.reset();
+        document.getElementById('total-price').textContent = '0';
+
     });
 }
 
