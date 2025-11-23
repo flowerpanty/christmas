@@ -102,32 +102,36 @@ function setupForm() {
 
         const memo = document.getElementById('memo').value;
 
-        console.log('Submitting to Netlify Forms...');
+        console.log('Submitting to Google Sheets...');
 
-        // Create FormData for Netlify Forms
-        const netlifyFormData = new FormData();
-        netlifyFormData.append('form-name', 'order-form');
-        netlifyFormData.append('name', name);
-        netlifyFormData.append('phone', phone);
-        netlifyFormData.append('brookie1_qty', brookie1Qty);
-        netlifyFormData.append('brookie1_option', brookie1Option);
-        netlifyFormData.append('brookie2_qty', brookie2Qty);
-        netlifyFormData.append('faceset_qty', faceSetQty);
-        netlifyFormData.append('total_price', total);
-        netlifyFormData.append('pickup_method', pickupMethod);
-        netlifyFormData.append('pickup_date', pickupDate);
-        netlifyFormData.append('pickup_time', pickupTime);
-        netlifyFormData.append('depositor', depositor);
-        netlifyFormData.append('amount', amount);
-        netlifyFormData.append('memo', memo);
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWJhN00WX4mkfoRO8Are5XdcCJs_6GNzinTPWgsJJJLl3FJuigJCC40AJBtnyRDyE/exec';
 
-        // Submit to Netlify Forms
-        fetch('/', {
+        const formData = {
+            name,
+            phone,
+            brookie1Qty,
+            brookie1Option,
+            brookie2Qty,
+            faceSetQty,
+            totalPrice: total,
+            pickupMethod,
+            pickupDate,
+            pickupTime,
+            depositor,
+            amount,
+            memo
+        };
+
+        fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            body: netlifyFormData
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
         })
             .then(() => {
-                console.log('Form submitted successfully to Netlify!');
+                console.log('Form submitted to Google Sheets!');
                 showModal();
                 form.reset();
                 document.getElementById('total-price').textContent = '0';
