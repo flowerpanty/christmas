@@ -1,3 +1,62 @@
+// 테스트 함수 - Apps Script에서 직접 실행 가능
+function testEmailAndSheets() {
+  const testData = {
+    name: "테스트고객",
+    email: "test@example.com",
+    phone: "010-1234-5678",
+    brookie1Qty: "2",
+    brookie1Option: "곰돌이",
+    brookie2Qty: "1",
+    faceSetQty: "3",
+    totalPrice: "50,000",
+    pickupMethod: "매장 픽업",
+    pickupDate: "12월 20일",
+    pickupTime: "15:00",
+    depositor: "홍길동",
+    amount: "50000",
+    memo: "테스트입니다"
+  };
+  
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  // 1. Sheets에 저장
+  sheet.appendRow([
+    new Date(),
+    testData.name,
+    testData.email,
+    testData.phone,
+    testData.brookie1Qty,
+    testData.brookie1Option,
+    testData.brookie2Qty,
+    testData.faceSetQty,
+    testData.totalPrice,
+    testData.pickupMethod,
+    testData.pickupDate,
+    testData.pickupTime,
+    testData.depositor,
+    testData.amount,
+    testData.memo
+  ]);
+  
+  Logger.log('Sheets 저장 완료');
+  
+  // 2. 고객에게 이메일
+  const customerSubject = '[NothingMatters] 주문이 접수되었습니다! 🎄';
+  const customerBody = `테스트 이메일입니다.\n주문자: ${testData.name}`;
+  
+  GmailApp.sendEmail(testData.email, customerSubject, customerBody);
+  Logger.log('고객 이메일 발송 완료: ' + testData.email);
+  
+  // 3. 관리자에게 이메일
+  const adminSubject = '[새 주문] ' + testData.name + '님 주문';
+  const adminBody = `테스트 알림입니다.\n주문자: ${testData.name}`;
+  
+  GmailApp.sendEmail('nahmsososochan@gmail.com', adminSubject, adminBody);
+  Logger.log('관리자 이메일 발송 완료');
+  
+  return 'SUCCESS!';
+}
+
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);

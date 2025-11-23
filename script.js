@@ -105,7 +105,7 @@ function setupForm() {
 
         console.log('Submitting order...');
 
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWJhN00WX4mkfoRO8Are5XdcCJs_6GNzinTPWgsJJJLl3FJuigJCC40AJBtnyRDyE/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyz-c3-UKvEn7Hu6P0Kj1yLVipVnp6CccZVx0RbhHwqsEdW4oE9z7XGDLuL8EJ6Wfni/exec';
 
         const orderData = {
             name: name,
@@ -126,17 +126,21 @@ function setupForm() {
 
         fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(orderData)
         })
-            .then(() => {
-                console.log('Order submitted successfully!');
-                showModal();
-                form.reset();
-                document.getElementById('total-price').textContent = '0';
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response:', data);
+                if (data.result === 'success') {
+                    showModal();
+                    form.reset();
+                    document.getElementById('total-price').textContent = '0';
+                } else {
+                    alert('오류: ' + data.error);
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
