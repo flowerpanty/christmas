@@ -13,25 +13,6 @@
 </head>
 
 <body>
-    <!-- Hidden form for Netlify to detect -->
-    <form name="order-form" netlify netlify-honeypot="bot-field" hidden>
-        <input type="text" name="name" />
-        <input type="tel" name="phone" />
-        <input type="number" name="brookie1_qty" />
-        <select name="brookie1_option">
-            <option value="none">None</option>
-        </select>
-        <input type="number" name="brookie2_qty" />
-        <input type="number" name="faceset_qty" />
-        <input type="text" name="total_price" />
-        <input type="text" name="pickup_method" />
-        <input type="text" name="pickup_date" />
-        <input type="text" name="pickup_time" />
-        <input type="text" name="depositor" />
-        <input type="number" name="amount" />
-        <textarea name="memo"></textarea>
-    </form>
-
     <div id="snow-container"></div>
 
     <div class="main-wrapper">
@@ -43,9 +24,7 @@
         <div class="tree-container">
             <div class="star-topper">★</div>
             <div class="main-container">
-                <form id="order-form" class="order-form" name="order-form" data-netlify="true">
-                    <!-- Hidden input for Netlify Forms -->
-                    <input type="hidden" name="form-name" value="order-form" />
+                <form id="order-form" class="order-form">
 
                     <!-- Notices -->
                     <div class="notice-box">

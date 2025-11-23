@@ -102,44 +102,39 @@ function setupForm() {
 
         const memo = document.getElementById('memo').value;
 
-        console.log('Submitting to Google Sheets...');
+        console.log('Preparing email submission...');
 
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWJhN00WX4mkfoRO8Are5XdcCJs_6GNzinTPWgsJJJLl3FJuigJCC40AJBtnyRDyE/exec';
-
-        const formData = {
-            name,
-            phone,
-            brookie1Qty,
-            brookie1Option,
-            brookie2Qty,
-            faceSetQty,
+        // Create JSON data for email
+        const orderData = {
+            name: name,
+            phone: phone,
+            brookie1Qty: brookie1Qty,
+            brookie1Option: brookie1Option,
+            brookie2Qty: brookie2Qty,
+            faceSetQty: faceSetQty,
             totalPrice: total,
-            pickupMethod,
-            pickupDate,
-            pickupTime,
-            depositor,
-            amount,
-            memo
+            pickupMethod: pickupMethod,
+            pickupDate: pickupDate,
+            pickupTime: pickupTime,
+            depositor: depositor,
+            amount: amount,
+            memo: memo
         };
 
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        })
-            .then(() => {
-                console.log('Form submitted to Google Sheets!');
-                showModal();
-                form.reset();
-                document.getElementById('total-price').textContent = '0';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('주문 전송 중 오류가 발생했습니다. 다시 시도해주세요.');
-            });
+        const subject = '[쿠키주문]';
+        const body = JSON.stringify(orderData, null, 2);
+
+        const mailtoLink = `mailto:nahmsososochan@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        // Open email client
+        window.location.href = mailtoLink;
+
+        // Show success modal
+        setTimeout(() => {
+            showModal();
+            form.reset();
+            document.getElementById('total-price').textContent = '0';
+        }, 500);
     });
 }
 
