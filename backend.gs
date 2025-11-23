@@ -1,5 +1,8 @@
-// 테스트 함수 - Apps Script에서 직접 실행 가능
-function testEmailAndSheets() {
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({status: 'alive'})).setMimeType(ContentService.MimeType.JSON);
+}
+
+
   const testData = {
     name: "테스트고객",
     email: "test@example.com",
@@ -51,7 +54,7 @@ function testEmailAndSheets() {
   const adminSubject = '[새 주문] ' + testData.name + '님 주문';
   const adminBody = `테스트 알림입니다.\n주문자: ${testData.name}`;
   
-  GmailApp.sendEmail('nahmsososochan@gmail.com', adminSubject, adminBody);
+  GmailApp.sendEmail('flowerpanty@gmail.com', adminSubject, adminBody);
   Logger.log('관리자 이메일 발송 완료');
   
   return 'SUCCESS!';
@@ -175,7 +178,7 @@ NothingMatters
 Google Sheets에서 확인하세요!
     `.trim();
 
-    GmailApp.sendEmail('nahmsososochan@gmail.com', adminSubject, adminBody);
+    GmailApp.sendEmail('flowerpanty@gmail.com', adminSubject, adminBody);
 
     return ContentService.createTextOutput(JSON.stringify({ 
       'result': 'success' 

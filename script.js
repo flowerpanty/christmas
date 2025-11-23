@@ -165,7 +165,7 @@ function setupForm() {
 
         // 관리자용 이메일 파라미터
         const adminEmailParams = {
-            to_email: 'nahmsososochan@gmail.com',
+            to_email: 'flowerpanty@gmail.com',
             name: name,
             email: email,
             phone: phone,
