@@ -53,14 +53,20 @@
                                 <h4>브루키 1구</h4>
                                 <p class="price">8,500원</p>
                                 <div class="option-group">
-                                    <label>옵션 선택:</label>
-                                    <select name="brookie1_option" class="product-input" data-price="8500">
-                                        <option value="none">선택안함 (0개)</option>
-                                        <option value="bear">곰돌이 (기본)</option>
-                                        <option value="tree">트리 (+500원)</option>
-                                    </select>
-                                    <input type="number" name="brookie1_qty" class="qty-input product-input" min="0"
-                                        placeholder="수량" value="0">
+                                    <div class="option-row">
+                                        <label class="option-label">🎨 옵션:</label>
+                                        <select name="brookie1_option" class="product-input product-select"
+                                            data-price="8500">
+                                            <option value="none">선택안함 (0개)</option>
+                                            <option value="bear">곰돌이 (기본)</option>
+                                            <option value="tree">트리 (+500원)</option>
+                                        </select>
+                                    </div>
+                                    <div class="option-row">
+                                        <label class="option-label">🔢 수량:</label>
+                                        <input type="number" name="brookie1_qty" class="qty-input product-input" min="0"
+                                            placeholder="0" value="0">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -72,24 +78,31 @@
                                 <h4>브루키 2구</h4>
                                 <p class="price">17,000원</p>
                                 <div class="option-group">
-                                    <input type="number" name="brookie2_qty" class="qty-input product-input" min="0"
-                                        placeholder="수량" value="0" data-price="17000">
+                                    <div class="option-row">
+                                        <label class="option-label">🔢 수량:</label>
+                                        <input type="number" name="brookie2_qty" class="qty-input product-input" min="0"
+                                            placeholder="0" value="0" data-price="17000">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Cookie Face Set -->
+                        <!-- Santa Package (previously Cookie Face Set) -->
                         <div class="menu-item">
-                            <div class="img-placeholder bear-face">🍪</div>
+                            <div class="img-placeholder bear-face">🎅</div>
                             <div class="menu-info">
-                                <h4>쿠키 얼굴 세트</h4>
+                                <h4>산타꾸러미</h4>
                                 <p class="price">2,300원</p>
                                 <div class="option-group">
-                                    <input type="number" name="faceset_qty" class="qty-input product-input" min="0"
-                                        placeholder="수량" value="0" data-price="2300">
+                                    <div class="option-row">
+                                        <label class="option-label">🔢 수량:</label>
+                                        <input type="number" name="faceset_qty" class="qty-input product-input" min="0"
+                                            placeholder="0" value="0" data-price="2300">
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
 
                     <!-- Pickup Info -->
