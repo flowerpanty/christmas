@@ -105,7 +105,8 @@ function setupForm() {
 
         console.log('Submitting order...');
 
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyz-c3-UKvEn7Hu6P0Kj1yLVipVnp6CccZVx0RbhHwqsEdW4oE9z7XGDLuL8EJ6Wfni/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzuwkutGtG3xUVgs3Qlp5NweTNkzW4Eii-DiUTfTndNyCX_UrvcilpImB3bOcaVrs-f/exec';
+
 
         const orderData = {
             name: name,
