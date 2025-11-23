@@ -1,0 +1,11 @@
+{
+  "name": "nothingmatters-cookie-order",
+  "version": "1.0.0",
+  "description": "Christmas Cookie Order Web Application",
+  "scripts": {
+    "start": "npx -y serve -s . -p $PORT"
+  },
+  "keywords": ["cookie", "order", "christmas"],
+  "author": "",
+  "license": "ISC"
+}
