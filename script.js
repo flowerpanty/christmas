@@ -117,10 +117,9 @@ function setupForm() {
         // 타임스탬프 생성
         const timestamp = new Date().toLocaleString('ko-KR');
 
-        // 이메일 파라미터
-        const emailParams = {
-            to_email: email,                    // 고객 이메일
-            cc_email: 'nahmsososochan@gmail.com', // 관리자 이메일
+        // 고객용 이메일 파라미터
+        const customerEmailParams = {
+            to_email: email,
             name: name,
             email: email,
             phone: phone,
@@ -138,10 +137,36 @@ function setupForm() {
             timestamp: timestamp
         };
 
-        // EmailJS로 이메일 전송
-        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, emailParams)
+        // 관리자용 이메일 파라미터
+        const adminEmailParams = {
+            to_email: 'nahmsososochan@gmail.com',
+            name: name,
+            email: email,
+            phone: phone,
+            brookie1Qty: brookie1Qty,
+            brookie1Option: brookie1Option,
+            brookie2Qty: brookie2Qty,
+            faceSetQty: faceSetQty,
+            totalPrice: total,
+            pickupMethod: pickupMethod,
+            pickupDate: pickupDate,
+            pickupTime: pickupTime,
+            depositor: depositor,
+            amount: amount,
+            memo: memo || '없음',
+            timestamp: timestamp
+        };
+
+        // 고객에게 이메일 발송
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, customerEmailParams)
             .then(function (response) {
-                console.log('Email sent successfully!', response.status, response.text);
+                console.log('Customer email sent successfully!', response.status, response.text);
+
+                // 관리자에게 이메일 발송
+                return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, adminEmailParams);
+            })
+            .then(function (response) {
+                console.log('Admin email sent successfully!', response.status, response.text);
                 showModal();
                 form.reset();
                 document.getElementById('total-price').textContent = '0';
@@ -150,6 +175,7 @@ function setupForm() {
                 console.error('Email sending failed:', error);
                 alert('견적서 이메일 전송에 실패했습니다. 다시 시도해 주세요.');
             });
+
 
     });
 }
