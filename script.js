@@ -104,59 +104,52 @@ function setupForm() {
         const memo = document.getElementById('memo').value;
 
 
-        // 견적서 내용 생성
-        const quoteBody = `
-===========================================
-🎄 크리스마스 쿠키 주문 견적서 🎄
-===========================================
+        console.log('Preparing to send quote email...');
 
-📋 주문자 정보
---------------------------------------------
-성함: ${name}
-이메일: ${email}
-연락처: ${phone}
+        // EmailJS 초기화
+        const EMAILJS_PUBLIC_KEY = 'zZfFgoxrtxr8JYucN';
+        const EMAILJS_SERVICE_ID = 'service_xgj021m';
+        const EMAILJS_TEMPLATE_ID = 'template_aluys8o';
 
-🍪 주문 상품
---------------------------------------------
-- 브루키 1 (${brookie1Option}): ${brookie1Qty}개
-- 브루키 2: ${brookie2Qty}개
-- 페이스 세트: ${faceSetQty}개
+        // EmailJS 초기화
+        emailjs.init(EMAILJS_PUBLIC_KEY);
 
-💰 결제 정보
---------------------------------------------
-총 금액: ${total}
-입금자명: ${depositor}
-입금 예정액: ${amount}원
+        // 타임스탬프 생성
+        const timestamp = new Date().toLocaleString('ko-KR');
 
-🚗 수령 방법
---------------------------------------------
-방식: ${pickupMethod}
-날짜: ${pickupDate}
-시간: ${pickupTime}
+        // 이메일 파라미터
+        const emailParams = {
+            to_email: email,                    // 고객 이메일
+            cc_email: 'nahmsososochan@gmail.com', // 관리자 이메일
+            name: name,
+            email: email,
+            phone: phone,
+            brookie1Qty: brookie1Qty,
+            brookie1Option: brookie1Option,
+            brookie2Qty: brookie2Qty,
+            faceSetQty: faceSetQty,
+            totalPrice: total,
+            pickupMethod: pickupMethod,
+            pickupDate: pickupDate,
+            pickupTime: pickupTime,
+            depositor: depositor,
+            amount: amount,
+            memo: memo || '없음',
+            timestamp: timestamp
+        };
 
-📝 메모
---------------------------------------------
-${memo || '없음'}
-
-===========================================
-본 견적서는 ${new Date().toLocaleString('ko-KR')}에 생성되었습니다.
-문의사항은 nahmsososochan@gmail.com 으로 연락 주세요.
-===========================================
-        `.trim();
-
-        // 고객용 이메일
-        const customerSubject = `[크리스마스 쿠키] ${name}님의 주문 견적서`;
-        const customerMailto = `mailto:${email}?cc=nahmsososochan@gmail.com&subject=${encodeURIComponent(customerSubject)}&body=${encodeURIComponent(quoteBody)}`;
-
-        // 이메일 클라이언트 열기
-        window.location.href = customerMailto;
-
-        console.log('Quote email opened! Check your email client.');
-
-        // 성공 모달 표시
-        showModal();
-        form.reset();
-        document.getElementById('total-price').textContent = '0';
+        // EmailJS로 이메일 전송
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, emailParams)
+            .then(function (response) {
+                console.log('Email sent successfully!', response.status, response.text);
+                showModal();
+                form.reset();
+                document.getElementById('total-price').textContent = '0';
+            })
+            .catch(function (error) {
+                console.error('Email sending failed:', error);
+                alert('견적서 이메일 전송에 실패했습니다. 다시 시도해 주세요.');
+            });
 
     });
 }
