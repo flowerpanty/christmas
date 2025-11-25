@@ -1,0 +1,300 @@
+/* 
+   ✅ [워드프레스 관리자 > 외모 > 사용자 정의하기 > 추가 CSS] 에 붙여넣으세요. 
+*/
+
+/* ID Selector for Maximum Specificity */
+#nm-app-root {
+    --bg-color: #F5F5F7;
+    --card-bg: #FFFFFF;
+    --text-main: #1D1D1F;
+    --text-sub: #86868B;
+    --accent-blue: #0071E3;
+    --accent-red: #FF3B30;
+    --border-radius: 24px;
+    --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.04);
+
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.5;
+    color: #1D1D1F;
+    background-color: #F5F5F7;
+    max-width: 640px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+#nm-app-root * {
+    box-sizing: border-box;
+}
+
+/* 🎄 Ribbon Banner */
+#nm-app-root .nm-ribbon-wrap {
+    background-color: #1D1D1F !important;
+    color: #F5F5F7 !important;
+    overflow: hidden;
+    padding: 12px 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    position: relative;
+    z-index: 20;
+}
+
+#nm-app-root .nm-ribbon-item {
+    color: #F5F5F7 !important;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+}
+
+#nm-app-root .nm-ribbon-dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    background-color: #86868B;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+#nm-app-root .nm-ribbon-inner {
+    display: flex;
+    animation: scroll 40s linear infinite;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* Header Title */
+#nm-app-root .nm-header-title {
+    font-family: 'Gamja Flower', cursive;
+    font-size: 2.5rem;
+    text-align: center;
+    margin: 60px 0 40px;
+    color: #1D1D1F;
+}
+
+/* 💊 Filter Pills */
+#nm-app-root .nm-filter-row-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(245, 245, 247, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+#nm-app-root .nm-filter-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 0 24px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+#nm-app-root .nm-filter-row::-webkit-scrollbar {
+    display: none;
+}
+
+#nm-app-root .nm-filter-pill {
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #86868B;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+#nm-app-root .nm-filter-pill.active {
+    background-color: #1D1D1F;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Cards */
+#nm-app-root .nm-card-list {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+#nm-app-root .nm-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    border: none;
+}
+
+#nm-app-root .nm-card-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #86868B;
+    margin-bottom: 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+#nm-app-root .nm-dot-blue {
+    width: 6px;
+    height: 6px;
+    background-color: #0071E3;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+#nm-app-root .nm-hero-main-title {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    color: #1D1D1F;
+    letter-spacing: -1.5px;
+}
+
+#nm-app-root .nm-hero-sub-ko {
+    font-size: 1.25rem;
+    color: #86868B;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+/* Notice Card (Forced) */
+#nm-app-root .nm-notice-card {
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+#nm-app-root .nm-notice-pill {
+    background: #F5F5F7 !important;
+    color: #1D1D1F !important;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+#nm-app-root .nm-notice-body {
+    font-size: 1rem;
+    color: #1D1D1F;
+}
+
+/* KBoard Overrides (Nuclear) */
+#nm-app-root #kboard-default-latest .kboard-latest-title,
+#nm-app-root #kboard-default-list .kboard-list-title,
+#nm-app-root a.kboard-default-cut-strings {
+    color: #1D1D1F !important;
+    font-family: 'Noto Sans KR', sans-serif !important;
+    font-weight: 500 !important;
+}
+
+#nm-app-root .kboard-default-button-small,
+#nm-app-root button.kboard-default-button-small,
+#nm-app-root a.kboard-default-button-small {
+    background: #F5F5F7 !important;
+    border: none !important;
+    color: #1D1D1F !important;
+    border-radius: 100px !important;
+    box-shadow: none !important;
+}
+
+/* Choice Card */
+#nm-app-root .nm-card-choice {
+    text-align: center;
+}
+
+#nm-app-root .nm-card-title-choice {
+    font-family: 'Gamja Flower', cursive;
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    color: #1D1D1F;
+}
+
+#nm-app-root .nm-card-text-choice {
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+    color: #86868B;
+}
+
+#nm-app-root .nm-btn-choice-main {
+    background: #1D1D1F;
+    color: white;
+    padding: 18px 32px;
+    font-size: 1.1rem;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#nm-app-root .nm-btn-choice-ghost {
+    background: transparent;
+    border: 1px solid #E5E5E5;
+    color: #1D1D1F;
+    padding: 18px 32px;
+    font-size: 1.1rem;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+}
+
+/* Big Order Button */
+#nm-app-root .nm-big-cta-container {
+    padding: 20px 24px 60px;
+    text-align: center;
+}
+
+#nm-app-root .nm-big-cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background: white;
+    border: 3px solid #000;
+    border-radius: 50px;
+    padding: 20px;
+    text-decoration: none;
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: 'Noto Sans KR', sans-serif;
+    box-shadow: 6px 6px 0px #3B82F6;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+#nm-app-root .nm-big-cta-btn:hover {
+    top: 2px;
+    left: 2px;
+    box-shadow: 4px 4px 0px #3B82F6;
+}
+
+#nm-app-root .nm-footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #86868B;
+    font-size: 0.8rem;
+}
