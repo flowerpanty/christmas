@@ -1,241 +1,199 @@
 document.addEventListener('DOMContentLoaded', () => {
-    createSnowflakes();
-    setupForm();
-    setupPriceCalculation();
-    setupModal();
+    const pills = document.querySelectorAll('.nm-filter-pill');
+    const sections = document.querySelectorAll('.nm-card[id]'); // Only select cards with IDs (sections)
+
+    // 1. Click to Scroll
+    pills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+            // Remove active from all
+            pills.forEach((p) => p.classList.remove('active'));
+            // Add active to clicked
+            pill.classList.add('active');
+
+            const targetId = pill.dataset.target;
+            const target = document.getElementById(targetId);
+
+            if (target) {
+                // Offset for sticky header
+                const headerOffset = 80;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // 2. Scroll Spy (Highlight active pill on scroll)
+    window.addEventListener('scroll', () => {
+        let current = '';
+        const scrollY = window.scrollY;
+        const headerOffset = 100; // Trigger point offset
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+
+            if (scrollY >= (sectionTop - headerOffset)) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        pills.forEach(pill => {
+            pill.classList.remove('active');
+            if (pill.dataset.target === current) {
+                pill.classList.add('active');
+            }
+        });
+    });
+
+    // 3. Journal Slider Auto-Scroll (Optional)
+    const sliderContainer = document.querySelector('.nm-journal-slider-container');
+    if (sliderContainer) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        // Mouse Drag Support
+        sliderContainer.addEventListener('mousedown', (e) => {
+            isDown = true;
+            sliderContainer.classList.add('active');
+            startX = e.pageX - sliderContainer.offsetLeft;
+            scrollLeft = sliderContainer.scrollLeft;
+        });
+        sliderContainer.addEventListener('mouseleave', () => {
+            isDown = false;
+            sliderContainer.classList.remove('active');
+        });
+        sliderContainer.addEventListener('mouseup', () => {
+            isDown = false;
+            sliderContainer.classList.remove('active');
+        });
+        sliderContainer.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - sliderContainer.offsetLeft;
+            const walk = (x - startX) * 2; // Scroll-fast
+            sliderContainer.scrollLeft = scrollLeft - walk;
+        });
+    }
+
+    // 4. Fetch Content (Mixed Sources)
+    const WP_API_BASE = 'https://betterbetters.co.kr/wp-json/wp/v2/posts?_embed&per_page=6';
+    const KBOARD_API_BASE = 'https://betterbetters.co.kr/wp-json/kboard/v1/list';
+
+    // Helper to fetch and render
+    async function fetchAndRender(sourceType, id, containerSelector, renderType) {
+        const container = document.querySelector(containerSelector);
+        if (!container) return;
+
+        try {
+            let posts = [];
+
+            if (sourceType === 'wp') {
+                // Fetch from WordPress Standard API (Categories)
+                const response = await fetch(`${WP_API_BASE}&categories=${id}`);
+                const data = await response.json();
+
+                posts = data.map(post => ({
+                    title: post.title.rendered,
+                    link: post.link,
+                    date: post.date.substring(0, 10),
+                    img: post._embedded && post._embedded['wp:featuredmedia']
+                        ? post._embedded['wp:featuredmedia'][0].source_url
+                        : '' // No placeholder if empty, or use default
+                }));
+            } else if (sourceType === 'kboard') {
+                // Fetch from Custom KBoard API
+                const response = await fetch(`${KBOARD_API_BASE}/${id}`);
+                const data = await response.json();
+
+                if (data && Array.isArray(data)) {
+                    posts = data.map(post => {
+                        let imgUrl = post.img;
+                        // Fix for file_download.php URL if present
+                        if (imgUrl && imgUrl.includes('file_download.php') && imgUrl.includes('file=/')) {
+                            const fileParam = imgUrl.split('file=')[1];
+                            if (fileParam.startsWith('/')) {
+                                imgUrl = 'https://betterbetters.co.kr' + fileParam;
+                            }
+                        }
+
+                        return {
+                            title: post.title,
+                            link: post.link,
+                            date: post.date,
+                            img: imgUrl
+                        };
+                    });
+                }
+            }
+
+            if (posts.length > 0) {
+                container.innerHTML = ''; // Clear placeholders
+
+                posts.forEach(post => {
+                    // Default image if missing
+                    const imgUrl = post.img ? post.img : 'https://via.placeholder.com/300x300?text=No+Image';
+
+                    let html = '';
+
+                    if (renderType === 'notice') {
+                        // Keep title for Notice
+                        html = `
+                            <li>
+                                <a href="${post.link}" target="_blank">
+                                    <span class="nm-notice-title">${post.title}</span>
+                                    <span class="nm-notice-date">${post.date}</span>
+                                </a>
+                            </li>
+                        `;
+                    } else if (renderType === 'slider') {
+                        // Work Log (Slider) - Show Title, Square Image
+                        html = `
+                            <div class="nm-journal-item">
+                                <a href="${post.link}" target="_blank" style="text-decoration:none; color:inherit;">
+                                    <div class="nm-journal-img" style="background-image: url('${imgUrl}');"></div>
+                                    <div class="nm-journal-info">
+                                        <div class="nm-journal-title">${post.title}</div>
+                                        <!-- Date Removed -->
+                                    </div>
+                                </a>
+                            </div>
+                        `;
+                    } else if (renderType === 'grid') {
+                        // Gallery (Grid) - No Title
+                        html = `
+                            <div class="nm-gallery-item">
+                                <a href="${post.link}" target="_blank" style="text-decoration:none; color:inherit;">
+                                    <div class="nm-gallery-img" style="background-image: url('${imgUrl}');"></div>
+                                    <!-- Title Removed -->
+                                </a>
+                            </div>
+                        `;
+                    }
+                    container.insertAdjacentHTML('beforeend', html);
+                });
+            }
+        } catch (error) {
+            console.error(`Failed to fetch ${sourceType} ${id}:`, error);
+        }
+    }
+
+    // Execute Fetches
+    // 1. Notice: KBoard ID 5
+    fetchAndRender('kboard', 5, '.nm-notice-list', 'notice');
+
+    // 2. Work Log: WP Category 6 (Brand Diary)
+    fetchAndRender('wp', 6, '.nm-journal-track', 'slider');
+
+    // 3. Dessert: KBoard ID 6
+    fetchAndRender('kboard', 6, '#section-dessert .nm-gallery-grid', 'grid');
+
+    // 4. Product: KBoard ID 8
+    fetchAndRender('kboard', 8, '#section-product .nm-gallery-grid', 'grid');
+
 });
-
-function createSnowflakes() {
-    const snowContainer = document.getElementById('snow-container');
-    const snowflakeCount = 50;
-
-    for (let i = 0; i < snowflakeCount; i++) {
-        const snowflake = document.createElement('div');
-        snowflake.classList.add('snowflake');
-
-        const left = Math.random() * 100;
-        const size = Math.random() * 5 + 2;
-        const duration = Math.random() * 5 + 5;
-        const delay = Math.random() * 5;
-
-        snowflake.style.left = `${left}%`;
-        snowflake.style.width = `${size}px`;
-        snowflake.style.height = `${size}px`;
-        snowflake.style.animationDuration = `${duration}s`;
-        snowflake.style.animationDelay = `${delay}s`;
-
-        snowContainer.appendChild(snowflake);
-    }
-}
-
-function setupPriceCalculation() {
-    const form = document.getElementById('order-form');
-    const inputs = form.querySelectorAll('.product-input');
-    const totalPriceEl = document.getElementById('total-price');
-
-    function calculateTotal() {
-        let total = 0;
-
-        // Brookie 1pc
-        const brookie1Qty = parseInt(form.querySelector('[name="brookie1_qty"]').value) || 0;
-        const brookie1Option = form.querySelector('[name="brookie1_option"]').value;
-        let brookie1Price = 8500;
-        if (brookie1Option === 'tree') {
-            brookie1Price += 500;
-        }
-        total += brookie1Price * brookie1Qty;
-
-        // Brookie 2pc
-        const brookie2Qty = parseInt(form.querySelector('[name="brookie2_qty"]').value) || 0;
-        total += 17000 * brookie2Qty;
-
-        // Face Set
-        const faceSetQty = parseInt(form.querySelector('[name="faceset_qty"]').value) || 0;
-        total += 2300 * faceSetQty;
-
-        totalPriceEl.textContent = total.toLocaleString();
-
-        // Auto-fill Deposit Amount
-        const amountInput = document.getElementById('amount');
-        if (amountInput) {
-            amountInput.value = total;
-        }
-
-        // Trigger Animation
-        const priceBox = document.querySelector('.total-price-box');
-        priceBox.classList.remove('pop');
-        void priceBox.offsetWidth; // Trigger reflow
-        priceBox.classList.add('pop');
-    }
-
-    inputs.forEach(input => {
-        input.addEventListener('input', calculateTotal);
-        input.addEventListener('change', calculateTotal);
-    });
-}
-
-function setupForm() {
-    const form = document.getElementById('order-form');
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        // Gather Data
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-
-        // Products (선택 사항)
-        const brookie1Qty = form.querySelector('[name="brookie1_qty"]').value;
-        const brookie1Option = form.querySelector('[name="brookie1_option"]').options[form.querySelector('[name="brookie1_option"]').selectedIndex].text;
-        const brookie2Qty = form.querySelector('[name="brookie2_qty"]').value;
-        const faceSetQty = form.querySelector('[name="faceset_qty"]').value;
-
-        // Pickup
-        const pickupMethodElement = form.querySelector('input[name="pickup_method"]:checked');
-        const pickupMethod = pickupMethodElement?.value === 'pickup' ? '매장 픽업' : '퀵 착불';
-        const pickupDate = document.getElementById('pickup_date').value;
-        const pickupTime = document.getElementById('pickup_time').value;
-
-        // Payment
-        const depositor = document.getElementById('depositor').value.trim();
-        const amount = document.getElementById('amount').value.trim();
-        const total = document.getElementById('total-price').textContent;
-
-        const memo = document.getElementById('memo').value; // 선택 사항
-
-        // ===== 필수 입력 검증 =====
-        const missingFields = [];
-
-        if (!name) missingFields.push('주문자 성함');
-        if (!email) missingFields.push('이메일');
-        if (!phone) missingFields.push('연락처');
-        if (!pickupMethodElement) missingFields.push('수령 방법');
-        if (!pickupDate) missingFields.push('픽업 날짜');
-        if (!pickupTime) missingFields.push('픽업 시간');
-        if (!depositor) missingFields.push('입금자명');
-        if (!amount) missingFields.push('입금 예정액');
-
-        // 이메일 형식 검증
-        if (email && !email.includes('@')) {
-            alert('올바른 이메일 주소를 입력해 주세요.');
-            return;
-        }
-
-        // 누락된 필드가 있을 경우
-        if (missingFields.length > 0) {
-            const fieldList = missingFields.join(', ');
-            alert(`다음 항목을 입력해 주세요:\n\n${fieldList}\n\n※ 상품 수량과 메모는 선택 사항입니다.`);
-            return;
-        }
-
-
-        console.log('Preparing to send quote email...');
-
-        // EmailJS 초기화
-        const EMAILJS_PUBLIC_KEY = 'zZfFgoxrtxr8JYucN';
-        const EMAILJS_SERVICE_ID = 'service_xgj021m';
-        const EMAILJS_TEMPLATE_ID = 'template_aluys8o';
-
-        // EmailJS 초기화
-        emailjs.init(EMAILJS_PUBLIC_KEY);
-
-        // 타임스탬프 생성
-        const timestamp = new Date().toLocaleString('ko-KR');
-
-        // 고객용 이메일 파라미터
-        const customerEmailParams = {
-            to_email: email,
-            name: name,
-            email: email,
-            phone: phone,
-            brookie1Qty: brookie1Qty,
-            brookie1Option: brookie1Option,
-            brookie2Qty: brookie2Qty,
-            faceSetQty: faceSetQty,
-            totalPrice: total,
-            pickupMethod: pickupMethod,
-            pickupDate: pickupDate,
-            pickupTime: pickupTime,
-            depositor: depositor,
-            amount: amount,
-            memo: memo || '없음',
-            timestamp: timestamp
-        };
-
-        // 관리자용 이메일 파라미터
-        const adminEmailParams = {
-            to_email: 'flowerpanty@gmail.com',
-            name: name,
-            email: email,
-            phone: phone,
-            brookie1Qty: brookie1Qty,
-            brookie1Option: brookie1Option,
-            brookie2Qty: brookie2Qty,
-            faceSetQty: faceSetQty,
-            totalPrice: total,
-            pickupMethod: pickupMethod,
-            pickupDate: pickupDate,
-            pickupTime: pickupTime,
-            depositor: depositor,
-            amount: amount,
-            memo: memo || '없음',
-            timestamp: timestamp
-        };
-
-        // 버튼 비활성화 및 텍스트 변경
-        const submitBtn = form.querySelector('.submit-btn');
-        const originalBtnText = submitBtn.textContent;
-        submitBtn.disabled = true;
-        submitBtn.textContent = '전송 중...';
-
-        // 고객에게 이메일 발송
-        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, customerEmailParams)
-            .then(function (response) {
-                console.log('Customer email sent successfully!', response.status, response.text);
-
-                // 관리자에게 이메일 발송
-                return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, adminEmailParams);
-            })
-            .then(function (response) {
-                console.log('Admin email sent successfully!', response.status, response.text);
-                showModal();
-                form.reset();
-                document.getElementById('total-price').textContent = '0';
-            })
-            .catch(function (error) {
-                console.error('Email sending failed:', error);
-                alert('견적서 이메일 전송에 실패했습니다. 다시 시도해 주세요.');
-            })
-            .finally(function () {
-                // 버튼 다시 활성화
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-            });
-    });
-}
-
-function setupModal() {
-    const modal = document.getElementById('success-modal');
-    const closeBtn = document.querySelector('.close-modal-btn');
-    const laterBtn = document.querySelector('.later-btn');
-
-    function closeModal() {
-        modal.classList.add('hidden');
-    }
-
-    closeBtn.addEventListener('click', closeModal);
-    laterBtn.addEventListener('click', closeModal);
-
-    // Close on click outside
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
-}
-
-function showModal() {
-    const modal = document.getElementById('success-modal');
-    modal.classList.remove('hidden');
-}

@@ -4,231 +4,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NothingMatters Cookie Order</title>
+    <title>nothingmatters · Atelier</title>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Gamja+Flower&display=swap"
+    <!-- Gamja Flower for emotion, Pretendard/Noto Sans for readability -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
         rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 
+
 <body>
-    <div id="snow-container"></div>
+    <div id="nm-app-root" class="nm-app">
 
-    <div class="main-wrapper">
-        <header class="logo-header">
-            <h1>nothingmatters</h1>
-            <p class="subtitle">Christmas Cookie Order</p>
-        </header>
-
-        <div class="tree-container">
-            <div class="star-topper">★</div>
-            <div class="main-container">
-                <form id="order-form" class="order-form">
-
-                    <!-- Notices -->
-                    <div class="notice-box">
-                        <h3>----주문 전 필독사항----</h3>
-                        <ul>
-                            <li>☺︎ 최소수량은 따로없습니다.</li>
-                            <li>☺︎ 주문 시, 환불 불가입니다 (픽업일자 변경은 4일전 까지 가능합니다)</li>
-                            <li>☺︎ 픽업 시간은 꼭 지켜주세요 (이로 인한 발생되는 부분은 책임지지 않습니다)</li>
-                            <li>☺︎ 주문서 전송 및 입금확인 후 예약완료 됩니다</li>
-                            <li>☺︎ 픽업 및 착불 퀵만 가능합니다 (파손 위험으로 택배는 진행하지 않습니다)</li>
-                        </ul>
-                        <p class="warning">신중한 예약 부탁드립니다</p>
-                        <p class="highlight">1시간 이내 입금 확인 안될시 바로 취소됨을 알려드립니다.</p>
-                        <p class="contact">카카오톡채널 > 🙃🙃>여기로 문의및 주문</p>
-                        <p class="social">👍👍🐻낫띵메터스 👍👍인스타그램. 인스타그랩</p>
-                    </div>
-
-                    <!-- Menu Grid -->
-                    <div class="menu-grid">
-                        <!-- Brookie 1pc -->
-                        <div class="menu-item">
-                            <div class="img-placeholder bear">🐻</div>
-                            <div class="menu-info">
-                                <h4>브루키 1구</h4>
-                                <p class="price">8,500원</p>
-                                <div class="option-group">
-                                    <div class="option-row">
-                                        <label class="option-label">🎨 옵션:</label>
-                                        <select name="brookie1_option" class="product-input product-select"
-                                            data-price="8500">
-                                            <option value="none">선택안함 (0개)</option>
-                                            <option value="bear">곰돌이 (기본)</option>
-                                            <option value="tree">트리 (+500원)</option>
-                                        </select>
-                                    </div>
-                                    <div class="option-row">
-                                        <label class="option-label">🔢 수량:</label>
-                                        <input type="number" name="brookie1_qty" class="qty-input product-input" min="0"
-                                            placeholder="0" value="0">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Brookie 2pc -->
-                        <div class="menu-item">
-                            <div class="img-placeholder rudolph">🎁</div>
-                            <div class="menu-info">
-                                <h4>브루키 2구</h4>
-                                <p class="price">17,000원</p>
-                                <div class="option-group">
-                                    <div class="option-row">
-                                        <label class="option-label">🔢 수량:</label>
-                                        <input type="number" name="brookie2_qty" class="qty-input product-input" min="0"
-                                            placeholder="0" value="0" data-price="17000">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Santa Package (previously Cookie Face Set) -->
-                        <div class="menu-item">
-                            <div class="img-placeholder bear-face">🎅</div>
-                            <div class="menu-info">
-                                <h4>산타꾸러미</h4>
-                                <p class="price">2,300원</p>
-                                <div class="option-group">
-                                    <div class="option-row">
-                                        <label class="option-label">🔢 수량:</label>
-                                        <input type="number" name="faceset_qty" class="qty-input product-input" min="0"
-                                            placeholder="0" value="0" data-price="2300">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Pickup Info -->
-                    <div class="section-box">
-                        <h3>픽업날짜 / 퀵 예약 안내</h3>
-                        <p>예약이 많은 12월 중에는 혼선을 피하기 위하여 고객님께서 직접 퀵을 예약하시는걸로 진행하고 있습니다.</p>
-                        <p>(카카오퀵등 퀵 어플이나 퀵 업체를 이용하여 예약 부탁드립니다)</p>
-
-                        <div class="form-group">
-                            <label>픽업 방법 (택배 불가)</label>
-                            <div class="pickup-list-container">
-                                <label class="pickup-item">
-                                    <input type="radio" name="pickup_method" value="pickup" required>
-                                    <span class="custom-check"></span>
-                                    <span class="label-text">매장 픽업 (직접 방문)</span>
-                                </label>
-                                <label class="pickup-item">
-                                    <input type="radio" name="pickup_method" value="quick">
-                                    <span class="custom-check"></span>
-                                    <span class="label-text">퀵 착불 (직접 예약 필수)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>픽업 날짜 / 시간</label>
-                            <div class="datetime-group">
-                                <select id="pickup_date" name="pickup_date" required>
-                                    <option value="" disabled selected>날짜 선택 (12/15 ~ 12/25)</option>
-                                    <option value="12월 15일">12월 15일</option>
-                                    <option value="12월 16일">12월 16일</option>
-                                    <option value="12월 17일">12월 17일</option>
-                                    <option value="12월 18일">12월 18일</option>
-                                    <option value="12월 19일">12월 19일</option>
-                                    <option value="12월 20일">12월 20일</option>
-                                    <option value="12월 21일">12월 21일</option>
-                                    <option value="12월 22일">12월 22일</option>
-                                    <option value="12월 23일">12월 23일</option>
-                                    <option value="12월 24일">12월 24일</option>
-                                    <option value="12월 25일">12월 25일</option>
-                                </select>
-                                <select id="pickup_time" name="pickup_time" required>
-                                    <option value="" disabled selected>시간 선택 (10:00 ~ 19:00)</option>
-                                    <option value="10:00">10:00</option>
-                                    <option value="11:00">11:00</option>
-                                    <option value="12:00">12:00</option>
-                                    <option value="13:00">13:00</option>
-                                    <option value="14:00">14:00</option>
-                                    <option value="15:00">15:00</option>
-                                    <option value="16:00">16:00</option>
-                                    <option value="17:00">17:00</option>
-                                    <option value="18:00">18:00</option>
-                                    <option value="19:00">19:00</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Total Price Display (Moved Here) -->
-                    <div class="total-price-box">
-                        <span>총 주문 금액:</span>
-                        <span id="total-price">0</span>원
-                    </div>
-
-                    <!-- Payment Info -->
-                    <div class="section-box">
-                        <h3>입금안내</h3>
-                        <p class="bank-info">입금계좌 : 국민은행 83050104204736</p>
-                        <p class="bank-info">예금주: 남수찬(낫띵메터스)</p>
-                        <p class="highlight">1시간 이내 입금 확인 안될시 바로 취소됨을 알려드립니다.</p>
-
-                        <div class="form-group">
-                            <label for="depositor">입금자성명</label>
-                            <input type="text" id="depositor" name="depositor" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="amount">입금액</label>
-                            <input type="number" id="amount" name="amount" required>
-                        </div>
-                    </div>
-
-                    <!-- Contact & Memo -->
-                    <div class="section-box">
-                        <div class="form-group">
-                            <label for="name">주문자 성함</label>
-                            <input type="text" id="name" name="name" required placeholder="이름을 입력하세요">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">주문자 이메일</label>
-                            <input type="email" id="email" name="email" required placeholder="example@email.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">주문자 연락처</label>
-                            <input type="tel" id="phone" name="phone" required placeholder="010-0000-0000">
-                        </div>
-                        <div class="form-group">
-                            <label for="memo">메모</label>
-                            <textarea id="memo" name="memo" rows="3" placeholder="메모 제출버튼을 꼭 눌러주세요"></textarea>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="submit-btn">제출 (Submit)</button>
-                </form>
+        <!-- 🎄 크리스마스 슬라이딩 띠배너 -->
+        <div class="nm-ribbon-wrap">
+            <div class="nm-ribbon">
+                <div class="nm-ribbon-inner">
+                    <span class="nm-ribbon-item">
+                        <span class="nm-ribbon-dot"></span>
+                        브루키 크리스마스 패키지 준비 중 · 오픈 소식은 작업일지에서 먼저 알려드려요
+                    </span>
+                    <span class="nm-ribbon-item">
+                        <span class="nm-ribbon-dot"></span>
+                        nothingmatters 아틀리에는 연말 시즌 동안 예약 픽업제로 운영돼요
+                    </span>
+                    <span class="nm-ribbon-item">
+                        <span class="nm-ribbon-dot"></span>
+                        From Nothing to Fun · 귀여운 크리스마스 디저트와 가방이 매일 업데이트되고 있어요
+                    </span>
+                    <!-- 무한루프용 복사 -->
+                    <span class="nm-ribbon-item">
+                        <span class="nm-ribbon-dot"></span>
+                        브루키 크리스마스 패키지 준비 중 · 오픈 소식은 작업일지에서 먼저 알려드려요
+                    </span>
+                    <span class="nm-ribbon-item">
+                        <span class="nm-ribbon-dot"></span>
+                        nothingmatters 아틀리에는 연말 시즌 동안 예약 픽업제로 운영돼요
+                    </span>
+                    <span class="nm-ribbon-item">
+                        <span class="nm-ribbon-dot"></span>
+                        From Nothing to Fun · 귀여운 크리스마스 디저트와 가방이 매일 업데이트되고 있어요
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Success Modal -->
-    <div id="success-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <button class="close-modal-btn">&times;</button>
-            <div class="modal-header">
-                <h2>🎉 견적서 전송 완료!</h2>
+        <!-- 타이틀 -->
+        <div class="nm-header-title">NOTHINGMATTERS</div>
+
+        <!-- 알약 버튼 네비게이션 -->
+        <div class="nm-filter-row-sticky">
+            <div class="nm-filter-row">
+                <button class="nm-filter-pill active" data-target="section-brand">🎉브랜드 소개</button>
+                <button class="nm-filter-pill" data-target="section-diary">📓작업일지</button>
+                <button class="nm-filter-pill" data-target="section-dessert">🍪 디저트</button>
+                <button class="nm-filter-pill" data-target="section-product">👜제품</button>
+                <button class="nm-filter-pill" data-target="section-choice">⭐오늘의 선택</button>
             </div>
-            <div class="modal-body">
-                <p>견적서가 이메일로 전송되었습니다.</p>
-                <p>추가 문의사항이 있으시면 카카오톡으로 상담받으세요!</p>
+        </div>
+
+        <!-- 메인 섹션 헤더 (All로 스크롤될 위치) -->
+        <div class="nm-card-list">
+
+            <!-- 카드 1: 🎉브랜드 소개 -->
+            <div class="nm-card" id="section-brand">
+                <div class="nm-card-tag">
+                    <span class="nm-dot-blue"></span>
+                    🎉브랜드 소개
+                </div>
+                <div class="nm-hero-main-title">From Nothing to Fun.</div>
+                <p class="nm-hero-sub-ko">
+                    귀여운 디저트와 감성적인 디자인 소품을 만드는<br>
+                    서울의 작은 아틀리에 브랜드, nothingmatters.
+                </p>
             </div>
-            <div class="modal-actions">
-                <a href="https://pf.kakao.com/_QdCaK" target="_blank" class="kakao-btn">🔥 최종 카카오톡 상담</a>
-                <button class="later-btn">나중에 하기</button>
+
+            <!-- 공지사항 카드 -->
+            <div class="nm-notice-card">
+                <div class="nm-notice-header">
+                    <a href="https://betterbetters.co.kr/공지및-이벤트?mod=list" style="text-decoration: none;">
+                        <span class="nm-notice-pill">🔔 공지사항</span>
+                    </a>
+                </div>
+                <div class="nm-notice-body">
+                    <ul class="nm-notice-list">
+                        <li>
+                            <a href="https://betterbetters.co.kr/공지및-이벤트?mod=list">
+                                <span class="nm-notice-title">[공지] 크리스마스 시즌 예약 안내</span>
+                                <span class="nm-notice-date">2023.11.25</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://betterbetters.co.kr/공지및-이벤트?mod=list">
+                                <span class="nm-notice-title">[이벤트] 12월 원데이 클래스 모집</span>
+                                <span class="nm-notice-date">2023.11.20</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://betterbetters.co.kr/공지및-이벤트?mod=list">
+                                <span class="nm-notice-title">[소식] 새로운 디저트 라인업</span>
+                                <span class="nm-notice-date">2023.11.15</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="modal-footer">
-                <p>📧 견적서를 이메일에서 확인해보세요!</p>
-                <p>💬 빠른 상담을 원하시면 카카오톡을 이용해주세요.</p>
+
+            <!-- 카드 2: 작업일지 -->
+            <div class="nm-card" id="section-diary">
+                <div class="nm-card-tag">
+                    <span class="nm-dot-blue"></span>
+                    작업일지 · Atelier Notes
+                </div>
+                <p class="nm-card-text">
+                    쿠키를 굽고, 가방을 만들고, 하루의 작은 기록
+                </p>
+                <!-- ⭐ 최신 글 자동 슬라이더 출력 -->
+                <div class="nm-journal-slider-container">
+                    <div class="nm-journal-track">
+                        <div class="nm-journal-item">
+                            <div class="nm-journal-img" style="background-color: #e0e0e0;"></div>
+                            <div class="nm-journal-info">
+                                <div class="nm-journal-title">오늘의 반죽</div>
+                                <div class="nm-journal-desc">촉촉한 초코칩 쿠키를 위한 준비</div>
+                            </div>
+                        </div>
+                        <div class="nm-journal-item">
+                            <div class="nm-journal-img" style="background-color: #d0d0d0;"></div>
+                            <div class="nm-journal-info">
+                                <div class="nm-journal-title">새로운 패키지</div>
+                                <div class="nm-journal-desc">크리스마스 선물용 박스 디자인</div>
+                            </div>
+                        </div>
+                        <div class="nm-journal-item">
+                            <div class="nm-journal-img" style="background-color: #c0c0c0;"></div>
+                            <div class="nm-journal-info">
+                                <div class="nm-journal-title">가방 제작기</div>
+                                <div class="nm-journal-desc">한 땀 한 땀 정성스럽게</div>
+                            </div>
+                        </div>
+                        <div class="nm-journal-item">
+                            <div class="nm-journal-img" style="background-color: #b0b0b0;"></div>
+                            <div class="nm-journal-info">
+                                <div class="nm-journal-title">오픈 준비 완료</div>
+                                <div class="nm-journal-desc">내일 만나요!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nm-gallery-footer">
+                    <a href="https://betterbetters.co.kr/category/brand-diary" class="nm-btn nm-btn-small">작업일지 전체
+                        보기</a>
+                </div>
             </div>
+
+            <!-- 카드 3: 디저트 -->
+            <div class="nm-card" id="section-dessert">
+                <div class="nm-card-tag">
+                    <span class="nm-dot-blue"></span>
+                    🍪 디저트 · Gallery
+                </div>
+                <p class="nm-card-text">
+                    맛 귀여움 그자체
+                </p>
+                <!-- ✅ 여기 래퍼 추가 -->
+                <div class="nm-dessert-gallery">
+                    <div class="nm-gallery-grid">
+                        <div class="nm-gallery-item">
+                            <div class="nm-gallery-img" style="background-color: #f8d7da;"></div>
+                            <div class="nm-gallery-name">루돌프 쿠키</div>
+                        </div>
+                        <div class="nm-gallery-item">
+                            <div class="nm-gallery-img" style="background-color: #d4edda;"></div>
+                            <div class="nm-gallery-name">트리 마들렌</div>
+                        </div>
+                        <div class="nm-gallery-item">
+                            <div class="nm-gallery-img" style="background-color: #fff3cd;"></div>
+                            <div class="nm-gallery-name">진저맨 쿠키</div>
+                        </div>
+                        <div class="nm-gallery-item">
+                            <div class="nm-gallery-img" style="background-color: #d1ecf1;"></div>
+                            <div class="nm-gallery-name">스노우볼</div>
+                        </div>
+                    </div>
+                    <div class="nm-gallery-footer">
+                        <a href="https://betterbetters.co.kr/디저트" class="nm-btn nm-btn-small">디저트 전체 보기</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 카드 4: 제품 갤러리 -->
+            <div class="nm-card" id="section-product">
+                <div class="nm-card-tag">
+                    <span class="nm-dot-blue"></span>
+                    👜 제품 · Gallery
+                </div>
+                <p class="nm-card-text">
+                    직접 만드는 제품들
+                </p>
+                <!-- ✅ 제품용 KBoard를 별도 래퍼 안에 -->
+                <div class="nm-product-gallery">
+                    <div class="nm-gallery-grid">
+                        <div class="nm-gallery-item">
+                            <div class="nm-gallery-img" style="background-color: #e2e3e5;"></div>
+                            <div class="nm-gallery-name">캔버스 토트백</div>
+                        </div>
+                        <div class="nm-gallery-item">
+                            <div class="nm-gallery-img" style="background-color: #f0f1f2;"></div>
+                            <div class="nm-gallery-name">미니 파우치</div>
+                        </div>
+                        <div class="nm-gallery-item">
+                            <div class="nm-gallery-img" style="background-color: #e9ecef;"></div>
+                            <div class="nm-gallery-name">체크 에코백</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nm-gallery-footer">
+                    <a href="https://betterbetters.co.kr/제품" class="nm-btn nm-btn-small">제품 전체 보기</a>
+                </div>
+            </div>
+
+            <!-- 카드 5: 오늘의 선택 (미니멀 하이라이트) -->
+            <div class="nm-card nm-card-choice" id="section-choice">
+                <div class="nm-card-tag nm-card-tag-choice">
+                    오늘의 선택
+                </div>
+                <div class="nm-card-title nm-card-title-choice">
+                    오늘은 무엇을 데려가실래요?
+                </div>
+                <p class="nm-card-text nm-card-text-choice">
+                    쿠키 한 조각, 가방 하나, 혹은 그냥 기록만 읽고 가셔도 좋아요.<br>
+                    오늘의 선택은, 지금 당신에게 가장 가벼운 기쁨이면 충분해요.
+                </p>
+                <div class="nm-cta-row nm-cta-row-choice">
+                    <a href="https://betterbetters.co.kr/디저트" class="nm-btn nm-btn-choice-main">디저트 보러가기</a>
+                    <a href="https://betterbetters.co.kr/제품" class="nm-btn nm-btn-choice-ghost">가방 & 소품 보러가기</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="nm-footer">
+            From Nothing to Fun. · nothingmatters
         </div>
     </div>
 

@@ -1,639 +1,602 @@
-:root {
-    --bg-color: #0F3B1E;
-    /* Deep Christmas Green */
-    --accent-red: #BB2528;
-    /* Christmas Red */
-    --gold: #F8B229;
-    --text-color: #333;
-}
+/* 
+   🔥 NUCLEAR CSS OVERRIDES 🔥 
+   #nm-app-root 아이디를 사용하여 워드프레스 테마 스타일을 무시합니다.
+*/
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+#nm-app-root {
+    /* Reset & Variables */
+    --bg-color: #F5F5F7;
+    --card-bg: #FFFFFF;
+    --text-main: #1D1D1F;
+    --text-sub: #444444;
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: 'Fredoka', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow-x: hidden;
+    /* Fonts */
+    --font-main: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    --font-logo: 'Gamja Flower', cursive;
+
+    font-family: var(--font-main) !important;
+    line-height: 1.55 !important;
+    color: #1D1D1F;
+    background-color: #F5F5F7;
+    max-width: 640px;
+    margin: 0 auto;
+    padding-bottom: 100px;
     position: relative;
+    box-sizing: border-box;
+    text-align: left;
+    font-size: 0.88rem !important;
+    /* User Request */
+    font-weight: 400 !important;
+    letter-spacing: -0.2px;
 }
 
-/* Total Price Box */
-.total-price-box {
-    background: white;
-    color: #C41E3A;
-    padding: 30px;
-    border-radius: 20px;
-    text-align: center;
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 30px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    border: 4px solid #FFD700;
-    transition: transform 0.2s;
+#nm-app-root * {
+    box-sizing: border-box;
+    font-family: var(--font-main) !important;
 }
 
-.total-price-box.pop {
-    animation: pop 0.3s ease-out;
+/* 🎄 Ribbon Banner */
+#nm-app-root .nm-ribbon-wrap {
+    background-color: #1D1D1F !important;
+    color: #F5F5F7 !important;
+    overflow: hidden;
+    padding: 12px 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    position: relative;
+    z-index: 20;
 }
 
-@keyframes pop {
+#nm-app-root .nm-ribbon-item {
+    color: #F5F5F7 !important;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+}
+
+#nm-app-root .nm-ribbon-dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    background-color: #86868B;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+#nm-app-root .nm-ribbon-inner {
+    display: flex;
+    animation: scroll 15s linear infinite;
+}
+
+@keyframes scroll {
     0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.1);
+        transform: translateX(0);
     }
 
     100% {
-        transform: scale(1);
+        transform: translateX(-50%);
     }
 }
 
-#total-price {
-    font-size: 2.5rem;
-    color: #C41E3A;
-    display: block;
-    margin-top: 5px;
+/* Header Title */
+#nm-app-root .nm-header-title {
+    font-family: var(--font-logo) !important;
+    font-size: 1.35rem !important;
+    /* User Request */
+    font-weight: 600 !important;
+    letter-spacing: 0.02em;
+    text-align: center;
+    margin: 40px 0 20px !important;
+    color: #1D1D1F;
 }
 
-/* Pickup List (Checkbox Style) */
-.pickup-list-container {
-    background-color: #165B33;
-    /* Dark Green like the image */
-    padding: 20px;
-    border-radius: 15px;
-    margin-top: 10px;
+/* 💊 Filter Pills (Minimal Line Style) */
+#nm-app-root .nm-filter-row-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(245, 245, 247, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.pickup-item {
+#nm-app-root .nm-filter-row {
     display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    cursor: pointer;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 0 24px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-.pickup-item:last-child {
-    margin-bottom: 0;
-}
-
-.pickup-item input {
+#nm-app-root .nm-filter-row::-webkit-scrollbar {
     display: none;
 }
 
-.custom-check {
-    width: 24px;
-    height: 24px;
-    background-color: white;
-    border-radius: 6px;
-    margin-right: 15px;
-    position: relative;
-    transition: all 0.2s;
+#nm-app-root .nm-filter-pill {
+    background: #ffffff !important;
+    border: 1.5px solid #000 !important;
+    /* Black Line */
+    color: #000 !important;
+    padding: 6px 14px;
+    border-radius: 50px !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    box-shadow: none !important;
 }
 
-/* Checkmark icon */
-.pickup-item input:checked+.custom-check::after {
-    content: '✔';
-    position: absolute;
-    color: #165B33;
-    font-size: 18px;
-    font-weight: bold;
-    left: 4px;
-    top: -2px;
+#nm-app-root .nm-filter-pill.active {
+    background: #000 !important;
+    color: #fff !important;
 }
 
-.label-text {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-/* Date/Time Group */
-.datetime-group {
+/* Cards */
+#nm-app-root .nm-card-list {
+    padding: 20px;
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 24px;
 }
 
-.datetime-group select {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-    background: white;
+#nm-app-root .nm-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    border: none;
 }
 
-/* Snow Animation */
-#snow-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
+/* Card Tag (Minimal Line Style) */
+#nm-app-root .nm-card-tag {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center;
+    background: #ffffff !important;
+    border: 1.5px solid #000 !important;
+    color: #000 !important;
+    border-radius: 50px !important;
+    padding: 4px 12px !important;
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+    margin-bottom: 14px;
+    gap: 4px !important;
+    box-shadow: none !important;
 }
 
-.snowflake {
-    position: absolute;
-    top: -10px;
-    background: white;
+#nm-app-root .nm-dot-blue {
+    width: 5px;
+    height: 5px;
+    background-color: #0071E3;
     border-radius: 50%;
-    opacity: 0.8;
-    animation: fall linear infinite;
+    margin-right: 4px;
 }
 
-@keyframes fall {
-    to {
-        transform: translateY(105vh);
-    }
+/* Hero Main Title */
+#nm-app-root .nm-hero-main-title {
+    font-family: 'Pretendard', sans-serif !important;
+    font-weight: 900 !important;
+    font-size: 2.2rem;
+    /* Adjusted for balance */
+    line-height: 1.1;
+    margin-bottom: 12px;
+    color: #1D1D1F;
+    letter-spacing: -1px;
 }
 
-/* Main Layout */
-.main-wrapper {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    max-width: 600px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#nm-app-root .nm-hero-sub-ko {
+    font-size: 0.88rem !important;
+    color: #444;
+    line-height: 1.55;
+    font-weight: 400;
 }
 
-.logo-header {
-    text-align: center;
-    color: white;
-    margin-bottom: 20px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.logo-header h1 {
-    font-family: 'Gamja Flower', cursive;
-    font-size: 3rem;
-    margin-bottom: 5px;
-}
-
-.subtitle {
-    font-size: 1.2rem;
-    opacity: 0.9;
-}
-
-.star-topper {
-    font-size: 3.5rem;
-    color: var(--gold);
-    text-shadow: 0 0 10px rgba(248, 178, 41, 0.8);
-    margin-bottom: -25px;
-    z-index: 20;
-    animation: twinkle 2s infinite ease-in-out;
-}
-
-@keyframes twinkle {
-
-    0%,
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    50% {
-        transform: scale(1.2);
-        opacity: 0.8;
-    }
-}
-
-/* Main Container (Red Box) */
-.main-container {
-    background-color: #C41E3A;
-    /* Christmas Red */
-    width: 100%;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    border: 4px solid #8B1B1D;
-    color: white;
-}
-
-/* Typography & Notices */
-h3 {
-    font-family: 'Gamja Flower', cursive;
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
-    padding-bottom: 5px;
-}
-
-.notice-box {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-}
-
-.notice-box ul {
-    list-style: none;
-    margin-bottom: 15px;
-}
-
-.notice-box li {
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-    line-height: 1.4;
-}
-
-.warning {
-    color: #FFD700;
-    font-weight: bold;
-    text-align: center;
-    margin: 10px 0;
-    font-size: 1.1rem;
-}
-
-.highlight {
-    background-color: rgba(255, 215, 0, 0.2);
-    padding: 5px;
-    border-radius: 5px;
-    font-weight: bold;
-    text-align: center;
-    margin: 10px 0;
-}
-
-.contact,
-.social {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 0.9rem;
-    opacity: 0.9;
-}
-
-/* Menu Grid */
-.menu-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.menu-item {
-    background: white;
-    color: #333;
-    border-radius: 10px;
+/* Card Text */
+#nm-app-root .nm-card-text {
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    color: #444 !important;
+    margin-top: 4px;
+    margin-bottom: 14px;
+    white-space: nowrap;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    text-overflow: ellipsis;
 }
 
-.menu-item.sold-out {
-    opacity: 0.7;
-    position: relative;
+/* Notice Card (Neon Lime + Minimal Layout) */
+#nm-app-root .nm-notice-card {
+    background: #BAFF39 !important;
+    /* Neon Lime */
+    border-radius: 26px;
+    padding: 14px 16px 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    color: #111;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    margin: 16px 0 20px;
 }
 
-.img-placeholder {
-    height: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 4rem;
-    background-color: #f0f0f0;
+#nm-app-root .nm-notice-header {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    display: block !important;
+    width: 100%;
 }
 
-.img-placeholder.tree {
-    background-color: #E8F5E9;
-}
-
-.img-placeholder.rudolph {
-    background-color: #FFF3E0;
-}
-
-.img-placeholder.rabbit {
-    background-color: #FAFAFA;
-}
-
-.img-placeholder.snowman {
-    background-color: #E3F2FD;
-}
-
-.img-placeholder.bear {
-    background-color: #EFEBE9;
-}
-
-.img-placeholder.bear-face {
-    background-color: #D7CCC8;
-}
-
-.menu-info {
-    padding: 15px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.menu-info h4 {
-    margin-bottom: 5px;
-    font-size: 1.1rem;
-}
-
-.menu-info p {
-    font-size: 0.9rem;
-    margin-bottom: 5px;
-    color: #666;
-}
-
-.menu-info .desc {
+#nm-app-root .nm-notice-pill {
+    background: #111 !important;
+    color: #fff !important;
+    padding: 4px 12px;
+    border-radius: 999px;
     font-size: 0.8rem;
-    color: #888;
+    font-weight: 500;
+    display: inline-flex !important;
+    margin-bottom: 6px;
+    border: none;
+}
+
+#nm-app-root .nm-notice-body {
+    width: 100% !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* KBoard Notice List Overrides */
+#nm-app-root .nm-notice-body table {
+    width: 100% !important;
+    display: block !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    margin-top: 0 !important;
+    border: none !important;
+}
+
+#nm-app-root .nm-notice-body thead,
+#nm-app-root .nm-notice-body .kboard-latest-date,
+#nm-app-root .nm-notice-body .kboard-latest-new {
+    display: none !important;
+}
+
+#nm-app-root .nm-notice-body tbody {
+    display: block !important;
+}
+
+#nm-app-root .nm-notice-body tbody tr {
+    display: block !important;
+    padding: 1px 0 !important;
+    border: none !important;
+}
+
+#nm-app-root .nm-notice-body tbody td {
+    display: block !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    text-align: left !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    color: #111 !important;
+    line-height: 1.25 !important;
+}
+
+#nm-app-root .nm-notice-body td a {
+    display: block !important;
+    text-decoration: none !important;
+    color: #111 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* KBoard Gallery (2-Column Grid + Reels Ratio) */
+#nm-app-root .kboard-pure-gallery-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#nm-app-root .kboard-pure-gallery-list .kboard-list-item {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+}
+
+#nm-app-root .kboard-pure-gallery-list .kboard-list-thumbnail {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+/* 썸네일 비율 (140% padding-top for Reels style) */
+#nm-app-root .kboard-pure-gallery-list .kboard-list-thumbnail-child {
+    width: 100% !important;
+    padding-top: 140% !important;
+    border-radius: 18px !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    display: block !important;
+}
+
+/* 갤러리 텍스트 숨기기 (이미지만) */
+#nm-app-root .kboard-pure-gallery-list .kboard-list-title,
+#nm-app-root .kboard-pure-gallery-list .kboard-list-user,
+#nm-app-root .kboard-pure-gallery-list .kboard-list-date,
+#nm-app-root .kboard-pure-gallery-list .kboard-list-view {
+    display: none !important;
+}
+
+/* Choice Card */
+#nm-app-root .nm-card-choice {
+    text-align: center;
+}
+
+#nm-app-root .nm-card-title-choice {
+    font-family: 'Pretendard', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: 1.5rem !important;
+    margin-bottom: 12px;
+    color: #1D1D1F;
+}
+
+#nm-app-root .nm-card-text-choice {
+    font-size: 0.88rem !important;
+    margin-bottom: 30px;
+    color: #86868B;
+    white-space: normal !important;
+    /* Allow wrap for this text */
+}
+
+#nm-app-root .nm-btn-choice-main {
+    background: white;
+    color: #1D1D1F;
+    border: 1px solid #1D1D1F;
+    padding: 14px 28px;
+    font-size: 0.86rem !important;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
     margin-bottom: 10px;
 }
 
-
-.status {
-    color: #C41E3A;
-    font-weight: bold;
-    margin-top: auto;
+#nm-app-root .nm-btn-choice-ghost {
+    background: transparent;
+    border: 1px solid #E5E5E5;
+    color: #1D1D1F;
+    padding: 14px 28px;
+    font-size: 0.86rem !important;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 10px;
 }
 
-/* Product Options - Improved Layout */
-.option-group {
+/* Big Order Button */
+#nm-app-root .nm-big-cta-container {
+    padding: 20px 24px 80px;
+    text-align: center;
+}
+
+#nm-app-root .nm-big-cta-btn {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background: white;
+    border: 3px solid #000;
+    border-radius: 50px;
+    padding: 18px;
+    text-decoration: none;
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: 800;
+    box-shadow: 6px 6px 0px #3B82F6;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+#nm-app-root .nm-big-cta-btn:hover {
+    top: 2px;
+    left: 2px;
+    box-shadow: 4px 4px 0px #3B82F6;
+    transition: all 0.2s ease;
+}
+
+#nm-app-root .nm-footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #86868B;
+    font-size: 0.75rem;
+}
+
+/* ------------------------------------------------------------------
+   REPLACEMENT STYLES FOR WORDPRESS SHORTCODES
+   ------------------------------------------------------------------ */
+
+/* 1. Notice List */
+#nm-app-root .nm-notice-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+#nm-app-root .nm-notice-list li {
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 8px;
+}
+
+#nm-app-root .nm-notice-list li:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+#nm-app-root .nm-notice-list a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: #111;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+#nm-app-root .nm-notice-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    margin-right: 10px;
+}
+
+#nm-app-root .nm-notice-date {
+    font-size: 0.75rem;
+    color: #555;
+    white-space: nowrap;
+}
+
+/* 2. Journal Slider */
+#nm-app-root .nm-journal-slider-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Firefox */
+    margin-top: 10px;
+    scroll-snap-type: x mandatory;
+}
+
+#nm-app-root .nm-journal-slider-container::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+}
+
+#nm-app-root .nm-journal-track {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 10px;
+    /* Space for shadow if needed */
+    width: max-content;
+}
+
+#nm-app-root .nm-journal-item {
+    width: 220px;
+    /* Increased width */
+    flex-shrink: 0;
+    background: #fff;
+    border-radius: 12px;
+    /* Slightly smaller radius */
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    scroll-snap-align: start;
+}
+
+#nm-app-root .nm-journal-img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    /* Wider portrait ratio (instead of 9/16) */
+    height: auto;
+    background-size: cover;
+    background-position: center;
+}
+
+#nm-app-root .nm-journal-info {
+    padding: 8px;
+    /* Reduced padding */
+}
+
+#nm-app-root .nm-journal-title {
+    font-size: 0.8rem;
+    /* Smaller title */
+    font-weight: 600;
+    color: #1D1D1F;
+    margin-bottom: 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+#nm-app-root .nm-journal-desc {
+    font-size: 0.8rem;
+    color: #86868B;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 3. Gallery Grid (Dessert & Product) */
+#nm-app-root .nm-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
     margin-top: 10px;
 }
 
-.option-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.option-label {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: #333;
-    min-width: 70px;
-    display: flex;
-    align-items: center;
-}
-
-.product-select {
-    flex: 1;
-    padding: 8px 12px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    background: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.product-select:focus {
-    outline: none;
-    border-color: #C41E3A;
-    box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.1);
-}
-
-.qty-input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    text-align: center;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.qty-input:focus {
-    outline: none;
-    border-color: #C41E3A;
-    box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.1);
-}
-
-/* Section Boxes */
-.section-box {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-.section-box p {
-    margin-bottom: 10px;
-    font-size: 0.95rem;
-    line-height: 1.4;
-}
-
-.section-box .small {
-    font-size: 0.85rem;
-    opacity: 0.8;
-}
-
-.bank-info {
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: #FFD700;
-}
-
-/* Form Elements */
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-input,
-textarea,
-select {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-family: 'Fredoka', sans-serif;
-    font-size: 1rem;
-}
-
-.radio-group {
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    color: #333;
-}
-
-.radio-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: #333;
-    font-weight: normal;
-    cursor: pointer;
-}
-
-/* Submit Button (Yellow) */
-.submit-btn {
-    width: 100%;
-    padding: 18px;
-    background-color: #FFD700;
-    /* Yellow */
-    color: #C41E3A;
-    /* Red Text */
-    border: none;
-    border-radius: 50px;
-    font-size: 1.3rem;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #B8860B;
-    transition: all 0.2s;
-    margin-top: 20px;
-}
-
-.submit-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 #B8860B;
-}
-
-.submit-btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 0 0 #B8860B;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-    .menu-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Modal Styles */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-}
-
-.modal-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-    visibility: hidden;
-}
-
-.modal-content {
-    background: white;
-    width: 90%;
-    max-width: 500px;
-    border-radius: 20px;
-    padding: 30px;
-    text-align: center;
+#nm-app-root .nm-gallery-item {
+    background: transparent;
+    border-radius: 18px;
+    overflow: hidden;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transform: translateY(0);
-    transition: transform 0.3s ease;
-    color: #333;
 }
 
-.modal-overlay.hidden .modal-content {
-    transform: translateY(20px);
+#nm-app-root .nm-gallery-img {
+    width: 100%;
+    padding-top: 100%;
+    /* 1:1 Aspect Ratio */
+    background-size: cover;
+    background-position: center;
+    border-radius: 18px;
+    margin-bottom: 8px;
 }
 
-.close-modal-btn {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 2rem;
-    color: #aaa;
-    cursor: pointer;
-    line-height: 1;
+#nm-app-root .nm-gallery-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1D1D1F;
+    text-align: center;
 }
 
-.close-modal-btn:hover {
-    color: #333;
+#nm-app-root .nm-gallery-footer {
+    margin-top: 20px;
+    text-align: center;
 }
 
-.modal-header h2 {
-    color: #4A90E2;
-    /* Blueish color from reference */
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-    font-family: 'Gamja Flower', cursive;
-}
-
-.modal-body p {
-    margin-bottom: 5px;
-    color: #555;
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-.modal-actions {
-    margin: 25px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.kakao-btn {
-    background-color: #FFD700;
-    /* Yellow */
-    color: #333;
+#nm-app-root .nm-btn-small {
+    display: inline-block;
+    padding: 8px 20px;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    border-radius: 20px;
     text-decoration: none;
-    padding: 15px;
-    border-radius: 50px;
-    font-weight: bold;
-    font-size: 1.1rem;
-    display: block;
-    transition: transform 0.2s;
-    box-shadow: 0 4px 0 #E5C100;
-}
-
-.kakao-btn:hover {
-    transform: translateY(-2px);
-}
-
-.later-btn {
-    background-color: #f5f5f5;
-    color: #333;
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 50px;
-    font-weight: bold;
-    font-size: 1.1rem;
-    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
     transition: background 0.2s;
 }
 
-.later-btn:hover {
-    background-color: #e0e0e0;
-}
-
-.modal-footer {
-    font-size: 0.85rem;
-    color: #888;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
-}
-
-.modal-footer p {
-    margin-bottom: 3px;
+#nm-app-root .nm-btn-small:hover {
+    background: #e5e5e7;
 }
