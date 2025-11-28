@@ -28,6 +28,11 @@
             <div class="main-container">
                 <form id="order-form" class="order-form">
 
+                    <!-- Photo Frame -->
+                    <div class="photo-frame">
+                        <img src="images/main-banner-new.jpg" alt="Christmas Cookies" class="frame-image">
+                    </div>
+
                     <!-- Notices -->
                     <div class="notice-box">
                         <h3>----주문 전 필독사항----</h3>
@@ -48,9 +53,17 @@
                     <div class="menu-grid">
                         <!-- Brookie 1pc -->
                         <div class="menu-item">
-                            <div class="img-placeholder bear">🐻</div>
+                            <div class="slider-wrapper">
+                                <div class="image-slider">
+                                    <div class="slider-track">
+                                        <img src="images/brookie_1.jpg" alt="Brookie Detail 1">
+                                        <img src="images/brookie_2.jpg" alt="Brookie Detail 2">
+                                    </div>
+                                </div>
+                                <div class="slider-arrow">❯</div>
+                            </div>
                             <div class="menu-info">
-                                <h4>브루키 1구</h4>
+                                <h4>브루키</h4>
                                 <p class="price">8,500원</p>
                                 <div class="option-group">
                                     <div class="option-row">
@@ -73,9 +86,17 @@
 
                         <!-- Brookie 2pc -->
                         <div class="menu-item">
-                            <div class="img-placeholder rudolph">🎁</div>
+                            <div class="slider-wrapper">
+                                <div class="image-slider">
+                                    <div class="slider-track">
+                                        <img src="images/brookie_set_1.jpg" alt="Brookie Set 1">
+                                        <img src="images/brookie_set_2.jpg" alt="Brookie Set 2">
+                                    </div>
+                                </div>
+                                <div class="slider-arrow">❯</div>
+                            </div>
                             <div class="menu-info">
-                                <h4>브루키 2구</h4>
+                                <h4>브루키세트</h4>
                                 <p class="price">17,000원</p>
                                 <div class="option-group">
                                     <div class="option-row">
@@ -89,10 +110,22 @@
 
                         <!-- Santa Package (previously Cookie Face Set) -->
                         <div class="menu-item">
-                            <div class="img-placeholder bear-face">🎅</div>
+                            <div class="video-container">
+                                <iframe
+                                    src="https://www.youtube.com/embed/7Zn1WAGnM-s?autoplay=1&mute=1&loop=1&playlist=7Zn1WAGnM-s&controls=0&rel=0"
+                                    title="Santa Package Video" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+                            </div>
                             <div class="menu-info">
                                 <h4>산타꾸러미</h4>
                                 <p class="price">23,000원</p>
+                                <div class="menu-desc-list">
+                                    <p>🦌 <strong>루돌프초코</strong> : 발로나 코코아로 만든 진한 꾸덕 초코 쿠키</p>
+                                    <p>🎅 <strong>버터산타</strong> : 고소한 피넛버터 쿠키</p>
+                                    <p>🍃 <strong>말차리스</strong> : 말차와 콘푸로스트의 조합 쿠키</p>
+                                    <p>⛄ <strong>로투스노우맨</strong> : 로투스 맛의 꾸덕한 쿠키</p>
+                                </div>
                                 <div class="option-group">
                                     <div class="option-row">
                                         <label class="option-label">🔢 수량:</label>
@@ -232,7 +265,12 @@
         </div>
     </div>
 
-    <script src="order-script.js"></script>
+    <!-- Floating Kakao Button -->
+    <a href="https://pf.kakao.com/_QdCaK/chat" target="_blank" class="floating-kakao">
+        <img src="images/kakao_consult.png" alt="카카오톡 상담">
+    </a>
+
+    <script src="script.js"></script>
 </body>
 
 </html>

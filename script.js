@@ -3,7 +3,32 @@ document.addEventListener('DOMContentLoaded', () => {
     setupForm();
     setupPriceCalculation();
     setupModal();
+    setupImageSliders();
 });
+
+function setupImageSliders() {
+    const arrows = document.querySelectorAll('.slider-arrow');
+    arrows.forEach(arrow => {
+        arrow.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent any default behavior
+            const wrapper = arrow.closest('.slider-wrapper');
+            const slider = wrapper.querySelector('.image-slider');
+
+            if (slider) {
+                // Scroll to the next slide (width of container)
+                // If at the end, scroll back to start
+                const maxScroll = slider.scrollWidth - slider.clientWidth;
+                const currentScroll = slider.scrollLeft;
+
+                if (currentScroll >= maxScroll - 10) {
+                    slider.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' });
+                }
+            }
+        });
+    });
+}
 
 function createSnowflakes() {
     const snowContainer = document.getElementById('snow-container');
