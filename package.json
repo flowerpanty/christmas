@@ -1,0 +1,18 @@
+{
+    "name": "nothingmatters-cookie-order",
+    "version": "1.0.0",
+    "description": "Christmas Cookie Order Web Application",
+    "scripts": {
+        "start": "serve -s . -p $PORT"
+    },
+    "dependencies": {
+        "serve": "^14.2.0"
+    },
+    "keywords": [
+        "cookie",
+        "order",
+        "christmas"
+    ],
+    "author": "",
+    "license": "ISC"
+}
