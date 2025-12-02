@@ -4,6 +4,14 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 캐시 방지 헤더 추가
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Expires', '-1');
+    res.set('Pragma', 'no-cache');
+    next();
+});
+
 // 정적 파일 서빙
 app.use(express.static(__dirname));
 
