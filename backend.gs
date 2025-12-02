@@ -43,6 +43,8 @@ function doPost(e) {
       return updateOrderStatus(sheet, data);
     } else if (data.action === 'delete_order') {
       return deleteOrder(sheet, data);
+    } else if (data.action === 'send_alimtalk') {
+      return sendAligoKakao(data);
     }
     
     // 기본: 새로운 주문 생성
@@ -52,6 +54,81 @@ function doPost(e) {
     return ContentService.createTextOutput(JSON.stringify({
       result: 'error',
       message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// 알리고 카카오톡 발송 함수
+function sendAligoKakao(data) {
+  // ⚠️ 사용자 설정 필요: 아래 정보를 알리고(Aligo) 계정 정보로 채워주세요.
+  const ALIGO_APIKEY = 'YOUR_API_KEY'; // 알리고 API Key
+  const ALIGO_USERID = 'YOUR_USER_ID'; // 알리고 아이디
+  const ALIGO_SENDERKEY = 'YOUR_SENDER_KEY'; // 발신프로필 키
+  const ALIGO_TPL_CODE = 'YOUR_TEMPLATE_CODE'; // 등록된 템플릿 코드
+  const ALIGO_SENDER_PHONE = 'YOUR_SENDER_PHONE'; // 발신자 전화번호 (알리고에 등록된 번호)
+
+  if (ALIGO_APIKEY === 'YOUR_API_KEY') {
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'error',
+      message: 'API Key가 설정되지 않았습니다. backend.gs 파일을 수정해주세요.'
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // 템플릿 내용 구성
+  // #{고객명}, #{상품목록}, #{수령방법}, #{날짜}, #{시간}, #{총금액}
+  const message = `[낫띵메터스]
+
+주문 접수 안내드립니다.
+
+고객명: ${data.name}
+주문내역: ${data.productSummary}
+수령방법: ${data.pickupMethod}
+수령일시: ${data.pickupDate} ${data.pickupTime}
+총금액: ${data.totalPrice}원
+
+주문하신 제품은 안내드린 일정에 맞추어 준비하겠습니다.
+
+낫띵메터스 소식 받기
+(채널 추가 시 알림 및 이벤트 안내)`;
+
+  // 알리고 API 요청 파라미터
+  const payload = {
+    'apikey': ALIGO_APIKEY,
+    'userid': ALIGO_USERID,
+    'senderkey': ALIGO_SENDERKEY,
+    'tpl_code': ALIGO_TPL_CODE,
+    'sender': ALIGO_SENDER_PHONE,
+    'receiver_1': data.phone,
+    'subject_1': '주문 접수 안내',
+    'message_1': message,
+    // 'testmode_yn': 'Y' // 테스트 모드 필요시 주석 해제 (실제 발송 안됨)
+  };
+
+  try {
+    const options = {
+      'method': 'post',
+      'payload': payload
+    };
+
+    const response = UrlFetchApp.fetch('https://kakaoapi.aligo.in/akv10/alimtalk/send/', options);
+    const result = JSON.parse(response.getContentText());
+
+    if (result.code == 0) { // 성공 코드는 0 (알리고 문서 기준 확인 필요, 보통 0이 성공)
+       return ContentService.createTextOutput(JSON.stringify({
+        result: 'success',
+        message: '카카오톡이 발송되었습니다.'
+      })).setMimeType(ContentService.MimeType.JSON);
+    } else {
+       return ContentService.createTextOutput(JSON.stringify({
+        result: 'error',
+        message: '발송 실패: ' + result.message
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'error',
+      message: 'API 요청 중 오류 발생: ' + error.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
