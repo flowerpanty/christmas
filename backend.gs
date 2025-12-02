@@ -1,29 +1,28 @@
 // 관리자 페이지에서 주문 데이터를 읽어오는 함수
 function doGet(e) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const data = sheet.getDataRange().getValues();
+  
+  // getDisplayValues()를 사용하여 표시된 텍스트 그대로 가져오기 (날짜 변환 방지)
+  const data = sheet.getDataRange().getDisplayValues();
   
   // 헤더 제외하고 데이터만 가져오기
   const orders = data.slice(1).map(row => {
-    // 날짜를 문자열로 변환
-    const timestamp = row[0] instanceof Date ? row[0].toISOString() : row[0];
-    
     return {
-      timestamp: timestamp,
-      name: row[1],
-      email: row[2],
-      phone: row[3],
-      brookieBearQty: row[4],
-      brookieTreeQty: row[5],
-      brookie2Qty: row[6],
-      santaPackageQty: row[7],
-      totalPrice: row[8],
-      pickupMethod: row[9],
-      pickupDate: row[10],
-      pickupTime: row[11],
-      depositor: row[12],
-      amount: row[13],
-      memo: row[14],
+      timestamp: row[0] || new Date().toISOString(), // 주문시간 (표시된 그대로 or fallback)
+      name: row[1] || '',
+      email: row[2] || '',
+      phone: row[3] || '',
+      brookieBearQty: row[4] || 0,
+      brookieTreeQty: row[5] || 0,
+      brookie2Qty: row[6] || 0,
+      santaPackageQty: row[7] || 0,
+      totalPrice: row[8] || '',
+      pickupMethod: row[9] || '',
+      pickupDate: row[10] || '',
+      pickupTime: row[11] || '',
+      depositor: row[12] || '',
+      amount: row[13] || '',
+      memo: row[14] || '',
       status: row[15] || '입금대기'
     };
   });
