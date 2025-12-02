@@ -407,7 +407,9 @@ function displayOrders(orders) {
 function updateStatistics(orders) {
     const totalOrders = orders.length;
     const totalSales = orders.reduce((sum, order) => {
-        const amount = parseInt(order.totalPrice.toString().replace(/,/g, ''));
+        // Remove all non-numeric characters (commas, '원', spaces, etc.)
+        const amountStr = order.totalPrice.toString().replace(/[^0-9]/g, '');
+        const amount = parseInt(amountStr);
         return sum + (isNaN(amount) ? 0 : amount);
     }, 0);
     const pendingOrders = orders.filter(o => o.status === '입금대기').length;
@@ -507,7 +509,10 @@ function showOrderDetail(order, index) {
                 <option value="픽업완료" ${order.status === '픽업완료' ? 'selected' : ''}>픽업완료</option>
             </select>
         </div>
-        <button class="btn-update-status" onclick="updateOrderStatus(${index})">상태 업데이트</button>
+        <div class="modal-actions">
+            <button class="btn-update-status" onclick="updateOrderStatus(${index})">상태 업데이트</button>
+            <button class="btn-delete-order" onclick="deleteOrder(${index})" style="background-color: #ff6b6b; margin-left: 10px;">주문 삭제</button>
+        </div>
     `;
 
     modal.classList.remove('hidden');
@@ -515,6 +520,58 @@ function showOrderDetail(order, index) {
 
 function closeModal() {
     document.getElementById('order-modal').classList.add('hidden');
+}
+
+// Delete Order
+window.deleteOrder = async function (index) {
+    const order = filteredOrders[index];
+
+    if (!confirm(`정말로 "${order.name}"님의 주문을 삭제하시겠습니까?\n삭제 후에는 복구할 수 없습니다.`)) {
+        return;
+    }
+
+    const btn = document.querySelector('.btn-delete-order');
+    if (btn) {
+        btn.textContent = '삭제 중...';
+        btn.disabled = true;
+    }
+
+    try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'delete_order',
+                timestamp: order.timestamp
+            })
+        });
+
+        // Optimistic delete
+        const originalIndex = allOrders.findIndex(o => o.timestamp === order.timestamp);
+        if (originalIndex !== -1) {
+            allOrders.splice(originalIndex, 1);
+        }
+
+        // Re-filter if necessary, but easiest to just reload or re-apply filters
+        applyFilters(); // Re-applies filters to allOrders and updates display
+        updateStatistics(allOrders);
+
+        if (typeof calendarManager !== 'undefined') {
+            calendarManager.render();
+        }
+
+        alert('주문이 삭제되었습니다.');
+        closeModal();
+
+    } catch (error) {
+        console.error('Error deleting order:', error);
+        alert('주문 삭제 중 오류가 발생했습니다.');
+        if (btn) {
+            btn.textContent = '주문 삭제';
+            btn.disabled = false;
+        }
+    }
 }
 
 // Update Order Status (Backend Integration)
