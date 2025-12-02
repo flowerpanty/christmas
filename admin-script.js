@@ -511,7 +511,8 @@ function showOrderDetail(order, index) {
         </div>
         <div class="modal-actions">
             <button class="btn-update-status" onclick="updateOrderStatus(${index})">상태 업데이트</button>
-            <button class="btn-delete-order" onclick="deleteOrder(${index})" style="background-color: #ff6b6b; margin-left: 10px;">주문 삭제</button>
+            <button class="btn-kakao-send" onclick="sendKakaoNotification(${index})">카카오톡 발송</button>
+            <button class="btn-delete-order" onclick="deleteOrder(${index})">주문 삭제</button>
         </div>
     `;
 
@@ -520,6 +521,59 @@ function showOrderDetail(order, index) {
 
 function closeModal() {
     document.getElementById('order-modal').classList.add('hidden');
+}
+
+// Send Kakao Notification
+window.sendKakaoNotification = async function (index) {
+    const order = filteredOrders[index];
+
+    if (!confirm(`"${order.name}"님에게 주문 접수 알림톡을 발송하시겠습니까?`)) {
+        return;
+    }
+
+    const btn = document.querySelector('.btn-kakao-send');
+    if (btn) {
+        btn.textContent = '발송 중...';
+        btn.disabled = true;
+    }
+
+    // 상품 요약 생성
+    const products = [];
+    if (order.brookieBearQty > 0) products.push(`브루키(곰돌이) ${order.brookieBearQty}개`);
+    if (order.brookieTreeQty > 0) products.push(`브루키(트리) ${order.brookieTreeQty}개`);
+    if (order.brookie2Qty > 0) products.push(`브루키 세트 ${order.brookie2Qty}개`);
+    if (order.santaPackageQty > 0) products.push(`산타꾸러미 ${order.santaPackageQty}개`);
+    const productSummary = products.join(', ');
+
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'send_alimtalk',
+                timestamp: order.timestamp,
+                name: order.name,
+                phone: order.phone,
+                productSummary: productSummary,
+                pickupMethod: order.pickupMethod,
+                pickupDate: order.pickupDate,
+                pickupTime: order.pickupTime,
+                totalPrice: order.totalPrice
+            })
+        });
+
+        alert('카카오톡 발송 요청을 보냈습니다.\n(성공 여부는 알리고 관리자 페이지에서 확인 가능)');
+
+    } catch (error) {
+        console.error('Error sending Kakao notification:', error);
+        alert('카카오톡 발송 중 오류가 발생했습니다.');
+    } finally {
+        if (btn) {
+            btn.textContent = '카카오톡 발송';
+            btn.disabled = false;
+        }
+    }
 }
 
 // Delete Order
