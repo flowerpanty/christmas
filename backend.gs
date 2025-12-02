@@ -23,7 +23,8 @@ function doGet(e) {
       depositor: row[12] || '',
       amount: row[13] || '',
       memo: row[14] || '',
-      status: row[15] || '입금대기'
+      status: row[15] || '입금대기',
+      kakaoSent: row[16] || '' // 카카오톡 발송 여부 (Column Q)
     };
   });
   
@@ -44,7 +45,7 @@ function doPost(e) {
     } else if (data.action === 'delete_order') {
       return deleteOrder(sheet, data);
     } else if (data.action === 'send_alimtalk') {
-      return sendAligoKakao(data);
+      return sendAligoKakao(sheet, data); // sheet 전달 추가
     }
     
     // 기본: 새로운 주문 생성
@@ -59,7 +60,7 @@ function doPost(e) {
 }
 
 // 알리고 카카오톡 발송 함수
-function sendAligoKakao(data) {
+function sendAligoKakao(sheet, data) {
   // ⚠️ 사용자 설정 필요: 아래 정보를 알리고(Aligo) 계정 정보로 채워주세요.
   const ALIGO_APIKEY = 'YOUR_API_KEY'; // 알리고 API Key
   const ALIGO_USERID = 'YOUR_USER_ID'; // 알리고 아이디
@@ -113,7 +114,14 @@ function sendAligoKakao(data) {
     const response = UrlFetchApp.fetch('https://kakaoapi.aligo.in/akv10/alimtalk/send/', options);
     const result = JSON.parse(response.getContentText());
 
-    if (result.code == 0) { // 성공 코드는 0 (알리고 문서 기준 확인 필요, 보통 0이 성공)
+    if (result.code == 0) { // 성공
+       // 발송 성공 시 시트에 'Y' 기록
+       const rowIndex = findOrderRowIndex(sheet, data);
+       if (rowIndex !== -1) {
+         // Column 17 (Index 16, Q열)에 'Y' 저장
+         sheet.getRange(rowIndex, 17).setValue('Y');
+       }
+
        return ContentService.createTextOutput(JSON.stringify({
         result: 'success',
         message: '카카오톡이 발송되었습니다.'
