@@ -65,23 +65,24 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     
-    // 1. Google Sheets에 저장
+    // 1. Google Sheets에 저장 (새로운 상품 구조)
     sheet.appendRow([
       new Date(),
       data.name,
       data.email,
       data.phone,
-      data.brookie1Qty,
-      data.brookie1Option,
-      data.brookie2Qty,
-      data.faceSetQty,
+      data.brookieBearQty || '0',
+      data.brookieTreeQty || '0',
+      data.brookie2Qty || '0',
+      data.santaPackageQty || '0',
       data.totalPrice,
       data.pickupMethod,
       data.pickupDate,
       data.pickupTime,
       data.depositor,
       data.amount,
-      data.memo
+      data.memo || '',
+      '입금대기' // 기본 상태
     ]);
 
     // 2. 고객에게 확인 이메일 전송
@@ -95,9 +96,10 @@ function doPost(e) {
 📋 주문 내역
 ━━━━━━━━━━━━━━━━━━━━━━
 
-• 브루키 1구: ${data.brookie1Qty}개 (${data.brookie1Option})
-• 브루키 2구: ${data.brookie2Qty}개
-• 쿠키 얼굴 세트: ${data.faceSetQty}개
+• 브루키 (곰돌이): ${data.brookieBearQty || 0}개
+• 브루키 (트리): ${data.brookieTreeQty || 0}개
+• 브루키 세트: ${data.brookie2Qty || 0}개
+• 산타꾸러미: ${data.santaPackageQty || 0}개
 
 💰 총 주문 금액: ${data.totalPrice}원
 
@@ -150,9 +152,10 @@ NothingMatters
 📋 주문 내역
 ━━━━━━━━━━━━━━━━━━━━━━
 
-• 브루키 1구: ${data.brookie1Qty}개 (${data.brookie1Option})
-• 브루키 2구: ${data.brookie2Qty}개
-• 쿠키 얼굴 세트: ${data.faceSetQty}개
+• 브루키 (곰돌이): ${data.brookieBearQty || 0}개
+• 브루키 (트리): ${data.brookieTreeQty || 0}개
+• 브루키 세트: ${data.brookie2Qty || 0}개
+• 산타꾸러미: ${data.santaPackageQty || 0}개
 
 💰 총 주문 금액: ${data.totalPrice}원
 
@@ -175,19 +178,52 @@ NothingMatters
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
-Google Sheets에서 확인하세요!
+관리자 페이지에서 확인하세요!
     `.trim();
 
     GmailApp.sendEmail('flowerpanty@gmail.com', adminSubject, adminBody);
 
     return ContentService.createTextOutput(JSON.stringify({ 
-      'result': 'success' 
+      'result': 'success',
+      'message': '주문이 성공적으로 저장되었습니다.'
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
+    Logger.log('Error in doPost: ' + error.toString());
     return ContentService.createTextOutput(JSON.stringify({ 
       'result': 'error', 
       'error': error.toString() 
     })).setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+// 관리자 페이지에서 주문 데이터를 읽어오는 함수
+function doGet(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = sheet.getDataRange().getValues();
+  
+  // 헤더 제외하고 데이터만 가져오기
+  const orders = data.slice(1).map(row => ({
+    timestamp: row[0],
+    name: row[1],
+    email: row[2],
+    phone: row[3],
+    brookieBearQty: row[4],
+    brookieTreeQty: row[5],
+    brookie2Qty: row[6],
+    santaPackageQty: row[7],
+    totalPrice: row[8],
+    pickupMethod: row[9],
+    pickupDate: row[10],
+    pickupTime: row[11],
+    depositor: row[12],
+    amount: row[13],
+    memo: row[14],
+    status: row[15] || '입금대기'
+  }));
+  
+  return ContentService.createTextOutput(JSON.stringify({
+    result: 'success',
+    orders: orders
+  })).setMimeType(ContentService.MimeType.JSON);
 }

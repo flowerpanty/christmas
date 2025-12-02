@@ -61,22 +61,21 @@ function setupPriceCalculation() {
     function calculateTotal() {
         let total = 0;
 
-        // Brookie 1pc
-        const brookie1Qty = parseInt(form.querySelector('[name="brookie1_qty"]').value) || 0;
-        const brookie1Option = form.querySelector('[name="brookie1_option"]').value;
-        let brookie1Price = 8500;
-        if (brookie1Option === 'tree') {
-            brookie1Price += 500;
-        }
-        total += brookie1Price * brookie1Qty;
+        // Brookie Bear (곰돌이)
+        const brookieBearQty = parseInt(form.querySelector('[name="brookie_bear_qty"]').value) || 0;
+        total += 8500 * brookieBearQty;
+
+        // Brookie Tree (트리)
+        const brookieTreeQty = parseInt(form.querySelector('[name="brookie_tree_qty"]').value) || 0;
+        total += 9000 * brookieTreeQty;
 
         // Brookie 2pc
-        const brookie2Qty = parseInt(form.querySelector('[name="brookie2_qty"]').value) || 0;
+        const brookie2Qty = parseInt(form.querySelector('[name="brookie2_qty\"]').value) || 0;
         total += 17000 * brookie2Qty;
 
-        // Face Set
-        const faceSetQty = parseInt(form.querySelector('[name="faceset_qty"]').value) || 0;
-        total += 23000 * faceSetQty;
+        // Santa Package (산타꾸러미)
+        const santaPackageQty = parseInt(form.querySelector('[name="faceset_qty"]').value) || 0;
+        total += 23000 * santaPackageQty;
 
         totalPriceEl.textContent = total.toLocaleString();
 
@@ -102,7 +101,7 @@ function setupPriceCalculation() {
 function setupForm() {
     const form = document.getElementById('order-form');
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         // Gather Data
@@ -111,10 +110,10 @@ function setupForm() {
         const phone = document.getElementById('phone').value.trim();
 
         // Products (선택 사항)
-        const brookie1Qty = form.querySelector('[name="brookie1_qty"]').value;
-        const brookie1Option = form.querySelector('[name="brookie1_option"]').options[form.querySelector('[name="brookie1_option"]').selectedIndex].text;
+        const brookieBearQty = form.querySelector('[name="brookie_bear_qty"]').value;
+        const brookieTreeQty = form.querySelector('[name="brookie_tree_qty"]').value;
         const brookie2Qty = form.querySelector('[name="brookie2_qty"]').value;
-        const faceSetQty = form.querySelector('[name="faceset_qty"]').value;
+        const santaPackageQty = form.querySelector('[name="faceset_qty"]').value;
 
         // Pickup
         const pickupMethodElement = form.querySelector('input[name="pickup_method"]:checked');
@@ -174,10 +173,10 @@ function setupForm() {
             name: name,
             email: email,
             phone: phone,
-            brookie1Qty: brookie1Qty,
-            brookie1Option: brookie1Option,
+            brookieBearQty: brookieBearQty,
+            brookieTreeQty: brookieTreeQty,
             brookie2Qty: brookie2Qty,
-            faceSetQty: faceSetQty,
+            santaPackageQty: santaPackageQty,
             totalPrice: total,
             pickupMethod: pickupMethod,
             pickupDate: pickupDate,
@@ -194,10 +193,10 @@ function setupForm() {
             name: name,
             email: email,
             phone: phone,
-            brookie1Qty: brookie1Qty,
-            brookie1Option: brookie1Option,
+            brookieBearQty: brookieBearQty,
+            brookieTreeQty: brookieTreeQty,
             brookie2Qty: brookie2Qty,
-            faceSetQty: faceSetQty,
+            santaPackageQty: santaPackageQty,
             totalPrice: total,
             pickupMethod: pickupMethod,
             pickupDate: pickupDate,
@@ -208,13 +207,57 @@ function setupForm() {
             timestamp: timestamp
         };
 
+        // Google Apps Script URL (사용자가 배포 후 입력해야 함)
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
         // 버튼 비활성화 및 텍스트 변경
         const submitBtn = form.querySelector('.submit-btn');
         const originalBtnText = submitBtn.textContent;
         submitBtn.disabled = true;
         submitBtn.textContent = '전송 중...';
 
-        // 고객에게 이메일 발송
+        // 주문 데이터 객체
+        const orderData = {
+            name: name,
+            email: email,
+            phone: phone,
+            brookieBearQty: brookieBearQty,
+            brookieTreeQty: brookieTreeQty,
+            brookie2Qty: brookie2Qty,
+            santaPackageQty: santaPackageQty,
+            totalPrice: total,
+            pickupMethod: pickupMethod,
+            pickupDate: pickupDate,
+            pickupTime: pickupTime,
+            depositor: depositor,
+            amount: amount,
+            memo: memo || '없음',
+            timestamp: timestamp
+        };
+
+        // 1. Google Sheets에 저장 시도 (Primary Storage)
+        let sheetsSuccess = false;
+        if (GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+            try {
+                const sheetsResponse = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                console.log('Google Sheets 저장 완료');
+                sheetsSuccess = true;
+            } catch (error) {
+                console.error('Google Sheets 저장 실패:', error);
+                console.log('이메일로만 발송합니다.');
+            }
+        } else {
+            console.log('Google Script URL이 설정되지 않음. 이메일로만 발송합니다.');
+        }
+
+        // 2. 고객 및 관리자에게 이메일 발송 (Backup Storage)
         emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, customerEmailParams)
             .then(function (response) {
                 console.log('Customer email sent successfully!', response.status, response.text);
