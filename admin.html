@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin-style.css?v=9">
+    <link rel="stylesheet" href="admin-style.css?v=10">
 </head>
 
 <body>
@@ -71,131 +71,123 @@
         </div>
 
         <!-- Filters -->
-        <div class="filters-container">
-            <div class="filter-group">
-                <label>📅 날짜별</label>
-                <select id="date-filter">
-                    <option value="all">전체</option>
-                    <option value="today">오늘</option>
-                    <option value="week">이번 주</option>
-                    <option value="month">이번 달</option>
+        <!-- Old filters removed -->
+
+        <!-- Tab Navigation -->
+        <div class="dashboard-tabs">
+            <button class="tab-btn active" data-tab="list">주문 목록</button>
+            <button class="tab-btn" data-tab="calendar">배송 일정</button>
+            <button class="tab-btn" data-tab="analysis">분석</button>
+        </div>
+
+        <!-- List View Section -->
+        <div id="section-list" class="dashboard-section active">
+            <!-- Filters -->
+            <div class="filters">
+                <input type="text" id="search-input" placeholder="이름, 연락처 검색...">
+                <select id="status-filter">
+                    <option value="all">전체 상태</option>
+                    <option value="입금대기">입금대기</option>
+                    <option value="입금확인">입금확인</option>
+                    <option value="제작중">제작중</option>
+                    <option value="픽업완료">픽업완료</option>
                 </select>
-            </div>
-            <!-- Tab Navigation -->
-            <div class="dashboard-tabs">
-                <button class="tab-btn active" data-tab="list">주문 목록</button>
-                <button class="tab-btn" data-tab="calendar">배송 일정</button>
-                <button class="tab-btn" data-tab="analysis">분석</button>
+                <!-- Date filter removed as per user request -->
+                <button id="refresh-btn">🔄 새로고침</button>
+                <button id="export-btn">📥 엑셀 다운로드</button>
             </div>
 
-            <!-- List View Section -->
-            <div id="section-list" class="dashboard-section active">
-                <!-- Filters -->
-                <div class="filters">
-                    <input type="text" id="search-input" placeholder="이름, 연락처 검색...">
-                    <select id="status-filter">
-                        <option value="all">전체 상태</option>
-                        <option value="입금대기">입금대기</option>
-                        <option value="입금확인">입금확인</option>
-                        <option value="제작중">제작중</option>
-                        <option value="픽업완료">픽업완료</option>
-                    </select>
-                    <!-- Date filter removed as per user request -->
-                    <button id="refresh-btn">🔄 새로고침</button>
-                    <button id="export-btn">📥 엑셀 다운로드</button>
-                </div>
-
-                <!-- Orders Table (Desktop) -->
-                <div class="table-container">
-                    <table class="orders-table">
-                        <thead>
-                            <tr>
-                                <th>주문시간</th>
-                                <th>이름</th>
-                                <th>연락처</th>
-                                <th>주문내역</th>
-                                <th>총액</th>
-                                <th>픽업일시</th>
-                                <th>입금자</th>
-                                <th>입금액</th>
-                                <th>상태</th>
-                            </tr>
-                        </thead>
-                        <tbody id="orders-tbody">
-                            <!-- Orders will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Mobile List View (Div-based) -->
-                <div id="mobile-list-view" class="mobile-list-view hidden">
-                    <!-- Mobile cards will be populated here -->
-                </div>
-
-                <div id="loading-message" class="loading-message">
-                    <div class="spinner"></div>
-                    <p>주문 데이터를 불러오는 중...</p>
-                </div>
-
-                <div id="no-orders-message" class="no-orders-message hidden">
-                    <p>주문 내역이 없습니다.</p>
-                </div>
+            <!-- Orders Table (Desktop) -->
+            <div class="table-container">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>주문시간</th>
+                            <th>이름</th>
+                            <th>연락처</th>
+                            <th>주문내역</th>
+                            <th>총액</th>
+                            <th>픽업일시</th>
+                            <th>입금자</th>
+                            <th>입금액</th>
+                            <th>상태</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-tbody">
+                        <!-- Orders will be populated here -->
+                    </tbody>
+                </table>
             </div>
 
-            <!-- Calendar View Section -->
-            <div id="section-calendar" class="dashboard-section hidden">
-                <div class="calendar-wrapper">
-                    <div class="calendar-header">
-                        <h2 id="calendar-title">2025년 12월</h2>
-                        <div class="calendar-controls">
-                            <button id="btn-today">오늘</button>
-                            <button id="btn-prev-month">❮</button>
-                            <button id="btn-next-month">❯</button>
-                        </div>
-                    </div>
+            <!-- Mobile List View (Div-based) -->
+            <div id="mobile-list-view" class="mobile-list-view hidden">
+                <!-- Mobile cards will be populated here -->
+            </div>
 
-                    <div class="calendar-grid-header">
-                        <div>일</div>
-                        <div>월</div>
-                        <div>화</div>
-                        <div>수</div>
-                        <div>목</div>
-                        <div>금</div>
-                        <div>토</div>
-                    </div>
+            <div id="loading-message" class="loading-message">
+                <div class="spinner"></div>
+                <p>주문 데이터를 불러오는 중...</p>
+            </div>
 
-                    <div id="calendar-grid" class="calendar-grid">
-                        <!-- Calendar days will be generated here -->
+            <div id="no-orders-message" class="no-orders-message hidden">
+                <p>주문 내역이 없습니다.</p>
+            </div>
+        </div>
+
+        <!-- Calendar View Section -->
+        <div id="section-calendar" class="dashboard-section hidden">
+            <div class="calendar-wrapper">
+                <div class="calendar-header">
+                    <h2 id="calendar-title">2025년 12월</h2>
+                    <div class="calendar-controls">
+                        <button id="btn-today">오늘</button>
+                        <button id="btn-prev-month">❮</button>
+                        <button id="btn-next-month">❯</button>
                     </div>
                 </div>
 
-                <div class="selected-date-details">
-                    <h3 id="selected-date-title">날짜를 선택하세요</h3>
-                    <div id="calendar-detail-list" class="calendar-detail-list">
-                        <!-- Selected date orders will appear here -->
-                    </div>
+                <div class="calendar-grid-header">
+                    <div>일</div>
+                    <div>월</div>
+                    <div>화</div>
+                    <div>수</div>
+                    <div>목</div>
+                    <div>금</div>
+                    <div>토</div>
+                </div>
+
+                <div id="calendar-grid" class="calendar-grid">
+                    <!-- Calendar days will be generated here -->
                 </div>
             </div>
 
-            <!-- Analysis Section (Placeholder) -->
-            <div id="section-analysis" class="dashboard-section hidden">
-                <div class="analysis-placeholder">
-                    <h3>📊 준비 중입니다</h3>
-                    <p>주문 통계 및 분석 기능이 곧 추가될 예정입니다.</p>
+            <div class="selected-date-details">
+                <h3 id="selected-date-title">날짜를 선택하세요</h3>
+                <div id="calendar-detail-list" class="calendar-detail-list">
+                    <!-- Selected date orders will appear here -->
                 </div>
             </div>
-            <!-- Order Detail Modal -->
-            <div id="order-modal" class="modal-overlay hidden">
-                <div class="modal-content">
-                    <button class="modal-close" id="close-modal">&times;</button>
-                    <h2>주문 상세 정보</h2>
-                    <div id="order-detail-content">
-                        <!-- Order details will be loaded here -->
-                    </div>
-                </div>
-            </div>
+        </div>
 
-            <script src="admin-script.js?v=9"></script>
+        <!-- Analysis Section (Placeholder) -->
+        <div id="section-analysis" class="dashboard-section hidden">
+            <div class="analysis-placeholder">
+                <h3>📊 준비 중입니다</h3>
+                <p>주문 통계 및 분석 기능이 곧 추가될 예정입니다.</p>
+            </div>
+        </div>
+        <!-- Order Detail Modal -->
+        <div id="order-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <button class="modal-close" id="close-modal">&times;</button>
+                <h2>주문 상세 정보</h2>
+                <div id="order-detail-content">
+                    <!-- Order details will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <script src="admin-script.js?v=9"></script>
 </body>
 
 </html>

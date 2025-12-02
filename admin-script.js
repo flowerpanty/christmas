@@ -5,6 +5,159 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKr77_KPQdoe
 let allOrders = [];
 let filteredOrders = [];
 
+// --- Calendar Manager (Moved to top) ---
+const calendarManager = {
+    currentDate: new Date(),
+    selectedDate: null,
+
+    init() {
+        this.render();
+        this.setupEventListeners();
+    },
+
+    setupEventListeners() {
+        document.getElementById('btn-prev-month').addEventListener('click', () => {
+            this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+            this.render();
+        });
+
+        document.getElementById('btn-next-month').addEventListener('click', () => {
+            this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+            this.render();
+        });
+
+        document.getElementById('btn-today').addEventListener('click', () => {
+            this.currentDate = new Date();
+            this.render();
+        });
+    },
+
+    render() {
+        const year = this.currentDate.getFullYear();
+        const month = this.currentDate.getMonth();
+
+        // Update Title
+        const titleEl = document.getElementById('calendar-title');
+        if (titleEl) titleEl.textContent = `${year}년 ${month + 1}월`;
+
+        const grid = document.getElementById('calendar-grid');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        const startDayOfWeek = firstDay.getDay(); // 0 (Sun) - 6 (Sat)
+        const totalDays = lastDay.getDate();
+
+        // Previous Month Padding
+        for (let i = 0; i < startDayOfWeek; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'calendar-day other-month';
+            grid.appendChild(cell);
+        }
+
+        // Current Month Days
+        for (let day = 1; day <= totalDays; day++) {
+            const dateStr = `${month + 1}월 ${day}일`; // Format matching pickupDate
+            const cell = document.createElement('div');
+            cell.className = 'calendar-day';
+            cell.innerHTML = `<div class="day-number">${day}</div>`;
+
+            // Find orders for this day
+            const dayOrders = allOrders.filter(o => o.pickupDate && o.pickupDate.includes(dateStr));
+
+            if (dayOrders.length > 0) {
+                const dotsContainer = document.createElement('div');
+                dotsContainer.className = 'day-dots';
+                dayOrders.forEach(order => {
+                    const dot = document.createElement('div');
+                    dot.className = `day-dot ${order.status === '픽업완료' ? 'completed' : ''}`;
+                    dotsContainer.appendChild(dot);
+                });
+                cell.appendChild(dotsContainer);
+            }
+
+            // Click Event
+            cell.addEventListener('click', () => {
+                // Remove selected class from others
+                document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+                cell.classList.add('selected');
+                this.renderDailySchedule(dateStr, dayOrders);
+            });
+
+            grid.appendChild(cell);
+        }
+    },
+
+    renderDailySchedule(dateStr, orders) {
+        const title = document.getElementById('selected-date-title');
+        const list = document.getElementById('calendar-detail-list');
+
+        if (title) title.textContent = `${this.currentDate.getFullYear()}년 ${dateStr} (${this.getDayOfWeek(dateStr)})`;
+        if (!list) return;
+        list.innerHTML = '';
+
+        if (orders.length === 0) {
+            list.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">예약된 주문이 없습니다.</p>';
+            return;
+        }
+
+        // Sort by time
+        orders.sort((a, b) => (a.pickupTime || '').localeCompare(b.pickupTime || ''));
+
+        orders.forEach(order => {
+            // Reuse the premium card style logic
+            const card = document.createElement('div');
+            card.className = 'mobile-card-premium'; // Reuse CSS class
+
+            // 픽업 뱃지 스타일
+            const pickupBadgeClass = order.pickupMethod.includes('퀵') ? 'badge-quick' : 'badge-pickup';
+            const pickupIcon = order.pickupMethod.includes('퀵') ? '🚚' : '🛍️';
+
+            // 상품 태그
+            let productTagsHtml = '';
+            if (order.brookieBearQty > 0) productTagsHtml += `<span class="product-tag">곰돌이 ${order.brookieBearQty}개</span>`;
+            if (order.brookieTreeQty > 0) productTagsHtml += `<span class="product-tag">트리 ${order.brookieTreeQty}개</span>`;
+            if (order.brookie2Qty > 0) productTagsHtml += `<span class="product-tag">세트 ${order.brookie2Qty}개</span>`;
+            if (order.santaPackageQty > 0) productTagsHtml += `<span class="product-tag">산타꾸러미 ${order.santaPackageQty}개</span>`;
+
+            card.innerHTML = `
+                <div class="card-header-premium">
+                    <div class="header-left">
+                        <div class="customer-name">
+                            ${order.name}
+                            <span class="${pickupBadgeClass}">${pickupIcon} ${order.pickupMethod}</span>
+                            <span class="status-badge status-${order.status}">${order.status}</span>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <span class="total-price">${order.totalPrice}</span>
+                    </div>
+                </div>
+                <div class="card-body-premium">
+                    <div class="info-row">⏰ 픽업 시간: ${order.pickupTime}</div>
+                    <div class="product-tags">${productTagsHtml}</div>
+                </div>
+            `;
+            // Add click listener to show details
+            card.addEventListener('click', () => showOrderDetail(order, order.originalIndex));
+            list.appendChild(card);
+        });
+    },
+
+    getDayOfWeek(dateStr) {
+        const year = this.currentDate.getFullYear();
+        const match = dateStr.match(/(\d+)월 (\d+)일/);
+        if (match) {
+            const date = new Date(year, parseInt(match[1]) - 1, parseInt(match[2]));
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            return days[date.getDay()] + '요일';
+        }
+        return '';
+    }
+};
+
 // Login Functionality
 document.addEventListener('DOMContentLoaded', () => {
     checkLogin();
@@ -236,6 +389,7 @@ function displayOrders(orders) {
                     <div class="product-tags">
                         ${productTagsHtml}
                     </div>
+                    <button class="btn-detail-mobile" onclick="showOrderDetail(filteredOrders[${index}], ${index})">상세보기</button>
                 </div>
             `;
             mobileListView.appendChild(card);
@@ -247,14 +401,6 @@ function displayOrders(orders) {
     if (mobileListViewEl && !document.querySelector('.table-container').classList.contains('hidden')) {
         mobileListViewEl.classList.remove('hidden');
     }
-
-    // Add event listeners to detail buttons
-    document.querySelectorAll('.btn-view-detail').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const index = e.target.dataset.index;
-            showOrderDetail(filteredOrders[index], index);
-        });
-    });
 }
 
 // Update Statistics
@@ -273,7 +419,6 @@ function updateStatistics(orders) {
     document.getElementById('completed-orders').textContent = completedOrders;
 }
 
-// Apply Filters
 // Apply Filters
 function applyFilters() {
     const statusValue = document.getElementById('status-filter').value;
@@ -357,7 +502,7 @@ function showOrderDetail(order, index) {
             <div class="detail-label">🏷️ 주문 상태</div>
             <select class="status-selector" id="status-select-${index}">
                 <option value="입금대기" ${order.status === '입금대기' ? 'selected' : ''}>입금대기</option>
-                <option value="입금완료" ${order.status === '입금완료' ? 'selected' : ''}>입금완료</option>
+                <option value="입금확인" ${order.status === '입금확인' ? 'selected' : ''}>입금확인</option>
                 <option value="제작중" ${order.status === '제작중' ? 'selected' : ''}>제작중</option>
                 <option value="픽업완료" ${order.status === '픽업완료' ? 'selected' : ''}>픽업완료</option>
             </select>
