@@ -543,7 +543,9 @@ window.deleteOrder = async function (index) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 action: 'delete_order',
-                timestamp: order.timestamp
+                timestamp: order.timestamp,
+                name: order.name,
+                phone: order.phone
             })
         });
 
@@ -600,6 +602,8 @@ window.updateOrderStatus = async function (index) {
             body: JSON.stringify({
                 action: 'update_status',
                 timestamp: order.timestamp,
+                name: order.name, // Fallback search key
+                phone: order.phone, // Fallback search key
                 status: newStatus
             })
         });
@@ -650,6 +654,8 @@ window.toggleStatus = async function (element, index) {
                 body: JSON.stringify({
                     action: 'update_status',
                     timestamp: order.timestamp,
+                    name: order.name,
+                    phone: order.phone,
                     status: nextStatus
                 })
             });
