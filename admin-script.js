@@ -140,7 +140,7 @@ function displayOrders(orders) {
         const row = document.createElement('tr');
 
         // 날짜 포맷팅 개선
-        let formattedDate = '-';
+        let formattedDate = order.timestamp || '-'; // 기본값으로 표시된 값 사용
         try {
             const timestamp = new Date(order.timestamp);
             if (!isNaN(timestamp.getTime())) {
