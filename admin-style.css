@@ -214,6 +214,8 @@ body {
     align-items: center;
     gap: 4px;
     flex: 1;
+    white-space: nowrap;
+    min-width: fit-content;
 }
 
 .btn-kakao-mobile:hover {
@@ -233,6 +235,8 @@ body {
     color: #155724;
     flex: 1;
     justify-content: center;
+    white-space: nowrap;
+    min-width: fit-content;
 }
 
 /* Card Actions Container for Mobile */
