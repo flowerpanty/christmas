@@ -103,9 +103,12 @@ function findOrderRowIndex(sheet, data) {
   const range = sheet.getDataRange();
   const values = range.getDisplayValues();
   
+  // 역순 검색 (최신 주문부터 검색)
+  // 프론트엔드에서는 최신순으로 보여주므로, 중복 데이터가 있을 경우 최신 데이터를 수정해야 함.
+  
   // 1. Timestamp로 검색 (가장 정확)
   if (timestamp) {
-    for (let i = 1; i < values.length; i++) {
+    for (let i = values.length - 1; i >= 1; i--) {
       if (values[i][0] == timestamp) {
         return i + 1; // 1-based index
       }
@@ -113,11 +116,9 @@ function findOrderRowIndex(sheet, data) {
   }
   
   // 2. (Fallback) Timestamp가 안 맞으면 Name + Phone으로 검색
-  // 구글 시트의 날짜 형식이 미세하게 달라서 Timestamp 매칭이 실패할 경우를 대비
   if (name && phone) {
-    for (let i = 1; i < values.length; i++) {
+    for (let i = values.length - 1; i >= 1; i--) {
       // Column 1 (B열): Name, Column 3 (D열): Phone
-      // 공백 제거 후 비교하여 유연성 확보
       const sheetName = values[i][1].toString().trim();
       const sheetPhone = values[i][3].toString().trim();
       const inputName = name.toString().trim();
