@@ -67,29 +67,31 @@ function setupDashboard() {
     document.getElementById('status-filter').addEventListener('change', applyFilters);
     document.getElementById('search-input').addEventListener('input', applyFilters);
 
-    // View Toggle
-    document.getElementById('list-view-btn').addEventListener('click', () => {
-        document.getElementById('list-view-btn').classList.add('active');
-        document.getElementById('calendar-view-btn').classList.remove('active');
+    // Tab Switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
 
-        document.querySelector('.table-container').classList.remove('hidden');
-        const mobileList = document.getElementById('mobile-list-view');
-        if (mobileList) mobileList.classList.remove('hidden');
+            // Add active class to clicked tab
+            btn.classList.add('active');
+            const tabName = btn.dataset.tab;
 
-        document.getElementById('calendar-view').classList.add('hidden');
+            // Show corresponding section
+            if (tabName === 'list') {
+                document.getElementById('section-list').classList.add('active');
+            } else if (tabName === 'calendar') {
+                document.getElementById('section-calendar').classList.add('active');
+                calendarManager.render(); // Re-render calendar
+            } else if (tabName === 'analysis') {
+                document.getElementById('section-analysis').classList.add('active');
+            }
+        });
     });
 
-    document.getElementById('calendar-view-btn').addEventListener('click', () => {
-        document.getElementById('calendar-view-btn').classList.add('active');
-        document.getElementById('list-view-btn').classList.remove('active');
-
-        document.querySelector('.table-container').classList.add('hidden');
-        const mobileList = document.getElementById('mobile-list-view');
-        if (mobileList) mobileList.classList.add('hidden');
-
-        document.getElementById('calendar-view').classList.remove('hidden');
-        displayCalendarView(filteredOrders);
-    });
+    // Initialize Calendar
+    calendarManager.init();
 
     // Modal close
     document.getElementById('close-modal').addEventListener('click', closeModal);
