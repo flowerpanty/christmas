@@ -120,6 +120,14 @@ function updateOrderStatus(sheet, data) {
 
 // 새 주문 생성 함수
 function createNewOrder(sheet, data) {
+    // 유효성 검사: 이름이 없으면 주문을 생성하지 않음 (상태 업데이트 요청이 잘못 넘어온 경우 방지)
+    if (!data.name) {
+      return ContentService.createTextOutput(JSON.stringify({
+        result: 'error',
+        message: 'Name is required for new orders'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     // 1. Google Sheets에 저장 (새로운 상품 구조)
     sheet.appendRow([
       new Date(),
