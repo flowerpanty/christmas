@@ -607,9 +607,15 @@ body {
 
     #orders-tbody td {
         display: block;
-        padding: 10px 0;
+        padding: 6px 0;
+        /* 패딩 축소 */
         border: none;
         text-align: left !important;
+        font-size: 13px;
+        /* 폰트 크기 축소 */
+        word-break: break-all;
+        /* 긴 텍스트 줄바꿈 */
+        line-height: 1.4;
     }
 
     #orders-tbody td::before {
@@ -618,8 +624,9 @@ body {
         color: #667eea;
         display: block;
         /* 라벨을 위에 표시 */
-        font-size: 12px;
-        margin-bottom: 4px;
+        font-size: 11px;
+        /* 라벨 폰트 크기 축소 */
+        margin-bottom: 2px;
     }
 
     .loading-message,
