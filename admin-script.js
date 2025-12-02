@@ -457,3 +457,10 @@ function displayCalendarView(orders) {
 
     calendarContainer.innerHTML = html;
 }
+
+// 초기 로드 시 리사이즈 이벤트 트리거 (모바일 렌더링 이슈 해결용)
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+    }, 500);
+});
