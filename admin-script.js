@@ -211,7 +211,7 @@ function displayOrders(orders) {
                         <div class="customer-name">
                             ${order.name}
                             <span class="${pickupBadgeClass}">${pickupIcon} ${order.pickupMethod}</span>
-                            <span class="status-badge status-${order.status}">${order.status}</span>
+                            <span class="status-badge status-${order.status}" onclick="event.stopPropagation(); toggleStatus(this, ${index})">${order.status}</span>
                         </div>
                         <div class="card-badges">
                             <span class="badge-pickup" style="background: #f5f5f5; color: #666; border: 1px solid #ddd;">입금확인 ${formattedDate.split(' ')[0]}</span>
@@ -224,22 +224,22 @@ function displayOrders(orders) {
                 </div>
                 
                 <div class="card-body-premium">
-                    <div class="info-row">📅 배송일: 2025-12-25 (예시)</div>
-                    <div class="info-row">⏰ 픽업 시간: ${order.pickupTime || '미지정'}</div>
+                    <div class="info-row">📅 픽업 날짜: ${order.pickupDate}</div>
+                    <div class="info-row">⏰ 픽업 시간: ${order.pickupTime}</div>
                     <div class="product-tags">
                         ${productTagsHtml}
                     </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button class="btn-action" onclick="updateStatus(${index}, '주문확인')">💬 주문확인</button>
-                    <button class="btn-action" onclick="updateStatus(${index}, '입금확인')">💬 입금확인</button>
-                    <button class="btn-action" onclick="updateStatus(${index}, '픽업대기')">💬 완성알림</button>
                 </div>
             `;
             mobileListView.appendChild(card);
         }
     });
+
+    // Ensure mobile list view is visible if in list mode
+    const mobileListViewEl = document.getElementById('mobile-list-view');
+    if (mobileListViewEl && !document.querySelector('.table-container').classList.contains('hidden')) {
+        mobileListViewEl.classList.remove('hidden');
+    }
 
     // Add event listeners to detail buttons
     document.querySelectorAll('.btn-view-detail').forEach(btn => {
