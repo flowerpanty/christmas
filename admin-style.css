@@ -605,7 +605,7 @@ body {
 
     #orders-tbody td {
         display: block;
-        padding: 8px 0;
+        padding: 10px 0;
         border: none;
         text-align: left !important;
     }
@@ -614,9 +614,10 @@ body {
         content: attr(data-label);
         font-weight: 600;
         color: #667eea;
-        display: inline-block;
-        min-width: 80px;
-        margin-right: 10px;
+        display: block;
+        /* 라벨을 위에 표시 */
+        font-size: 12px;
+        margin-bottom: 4px;
     }
 
     .loading-message,
