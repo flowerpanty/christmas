@@ -185,6 +185,7 @@ function setupLoginForm() {
             showDashboard();
             loadOrders();
         } else {
+            alert(`로그인 실패!\n입력한 비번: "${password}"\n정답 비번: "${ADMIN_PASSWORD}"`);
             errorEl.textContent = '비밀번호가 올바르지 않습니다.';
             setTimeout(() => {
                 errorEl.textContent = '';
