@@ -274,31 +274,29 @@ function updateStatistics(orders) {
 }
 
 // Apply Filters
+// Apply Filters
 function applyFilters() {
-    // const dateValue = document.getElementById('date-filter').value; // Removed
     const statusValue = document.getElementById('status-filter').value;
     const searchValue = document.getElementById('search-input').value.toLowerCase();
 
     filteredOrders = allOrders.filter(order => {
-        // Date Filter Removed
-        let dateMatch = true;
-        dateMatch = orderDate.getMonth() === today.getMonth() &&
-            orderDate.getFullYear() === today.getFullYear();
-    }
+        // Status Filter
+        let statusMatch = true;
+        if (statusValue !== 'all') {
+            statusMatch = order.status === statusValue;
         }
 
-// Status filter
-const statusMatch = statusFilter === 'all' || order.status === statusFilter;
+        // Search Filter
+        let searchMatch = true;
+        if (searchValue) {
+            searchMatch = order.name.toLowerCase().includes(searchValue) ||
+                order.phone.includes(searchValue);
+        }
 
-// Search filter
-const searchMatch = searchQuery === '' ||
-    order.name.toLowerCase().includes(searchQuery) ||
-    order.phone.includes(searchQuery);
-
-return dateMatch && statusMatch && searchMatch;
+        return statusMatch && searchMatch;
     });
 
-displayOrders(filteredOrders);
+    displayOrders(filteredOrders);
 }
 
 // Show Order Detail Modal
