@@ -64,11 +64,13 @@ function updateOrderStatus(sheet, data) {
   }
   
   const range = sheet.getDataRange();
-  const values = range.getValues();
+  // getDisplayValues()를 사용하여 표시된 텍스트 그대로 비교 (날짜 변환 방지)
+  const values = range.getDisplayValues();
   
   // 헤더 제외하고 검색 (Row index 1부터 시작)
   for (let i = 1; i < values.length; i++) {
     // Column 0 (A열)이 Timestamp라고 가정
+    // 문자열 비교 (둘 다 String)
     if (values[i][0] == timestamp) {
       // Status Column은 16번째 (Index 15, P열)
       // getRange(row, column) -> row는 1-based, column은 1-based
@@ -82,7 +84,7 @@ function updateOrderStatus(sheet, data) {
     }
   }
   
-  throw new Error('Order not found');
+  throw new Error('Order not found: ' + timestamp);
 }
 
 // 새 주문 생성 함수
