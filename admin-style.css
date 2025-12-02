@@ -574,50 +574,144 @@ body {
     margin-top: 5px;
 }
 
-/* Mobile List View (Div-based) */
+/* Mobile List View (Premium Card Style) */
 .mobile-list-view {
     display: none;
-    /* 기본적으로 숨김 (데스크탑) */
-}
-
-.mobile-order-card {
-    background: white;
-    border-radius: 12px;
     padding: 15px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    border: 1px solid #eee;
+    padding-bottom: 80px;
 }
 
-.mobile-card-header {
+.mobile-card-premium {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f0f0;
+}
+
+.card-header-premium {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.customer-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+    display: flex;
     align-items: center;
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #f0f0f0;
+    gap: 8px;
 }
 
-.mobile-card-time {
-    font-size: 12px;
-    color: #888;
-    font-weight: 500;
+.card-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
-.mobile-card-body {
-    font-size: 13px;
-    color: #333;
-}
-
-.mobile-card-row {
-    margin-bottom: 4px;
-    line-height: 1.4;
-}
-
-.mobile-card-row.highlight {
-    color: #667eea;
+.badge-pickup {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 20px;
     font-weight: 600;
-    margin-top: 8px;
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge-quick {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.header-right {
+    text-align: right;
+}
+
+.total-price {
+    font-size: 20px;
+    font-weight: 800;
+    color: #333;
+    display: block;
+}
+
+.card-body-premium {
+    margin-bottom: 15px;
+}
+
+.info-row {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.email-row {
+    color: #888;
+    font-size: 12px;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.product-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.product-tag {
+    background: #fff9c4;
+    color: #fbc02d;
+    color: #5d4037;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+    border-top: 1px solid #f5f5f5;
+    padding-top: 15px;
+}
+
+.btn-action {
+    flex: 1;
+    padding: 8px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background: white;
+    color: #555;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+
+.btn-action:active {
+    background: #f5f5f5;
+    transform: scale(0.98);
 }
 
 /* Mobile Media Query */
@@ -630,7 +724,8 @@ body {
     .mobile-list-view {
         display: block;
         /* 모바일에서 리스트 뷰 표시 */
-        padding: 0 15px 50px 15px;
+        /* padding: 0 15px 50px 15px; */
+        /* Removed by user's instruction */
     }
 
     .mobile-list-view.hidden {

@@ -189,23 +189,52 @@ function displayOrders(orders) {
         row.addEventListener('click', () => showOrderDetail(order, index));
         tbody.appendChild(row);
 
-        // --- Mobile List Card ---
+        // --- Mobile List Card (Premium Style) ---
         if (mobileListView) {
             const card = document.createElement('div');
-            card.className = 'mobile-order-card';
-            card.onclick = () => showOrderDetail(order, index);
+            card.className = 'mobile-card-premium';
+
+            // 픽업 뱃지 스타일
+            const pickupBadgeClass = order.pickupMethod.includes('퀵') ? 'badge-quick' : 'badge-pickup';
+            const pickupIcon = order.pickupMethod.includes('퀵') ? '🚚' : '🛍️';
+
+            // 상품 태그 생성
+            let productTagsHtml = '';
+            if (order.brookieBearQty > 0) productTagsHtml += `<span class="product-tag">곰돌이 ${order.brookieBearQty}개</span>`;
+            if (order.brookieTreeQty > 0) productTagsHtml += `<span class="product-tag">트리 ${order.brookieTreeQty}개</span>`;
+            if (order.brookie2Qty > 0) productTagsHtml += `<span class="product-tag">세트 ${order.brookie2Qty}개</span>`;
+            if (order.santaPackageQty > 0) productTagsHtml += `<span class="product-tag">산타꾸러미 ${order.santaPackageQty}개</span>`;
 
             card.innerHTML = `
-                <div class="mobile-card-header">
-                    <span class="mobile-card-time">${formattedDate}</span>
-                    <span class="status-badge status-${order.status}">${order.status}</span>
+                <div class="card-header-premium">
+                    <div class="header-left">
+                        <div class="customer-name">
+                            ${order.name}
+                            <span class="${pickupBadgeClass}">${pickupIcon} ${order.pickupMethod}</span>
+                            <span class="status-badge status-${order.status}">${order.status}</span>
+                        </div>
+                        <div class="card-badges">
+                            <span class="badge-pickup" style="background: #f5f5f5; color: #666; border: 1px solid #ddd;">입금확인 ${formattedDate.split(' ')[0]}</span>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <span class="total-price">${order.totalPrice}</span>
+                        <div class="email-row">${order.email}</div>
+                    </div>
                 </div>
-                <div class="mobile-card-body">
-                    <div class="mobile-card-row"><strong>👤 ${order.name}</strong> (${order.depositor})</div>
-                    <div class="mobile-card-row">📞 ${order.phone}</div>
-                    <div class="mobile-card-row">🍪 ${productSummary}</div>
-                    <div class="mobile-card-row">💰 ${order.totalPrice} (입금: ${order.amount})</div>
-                    <div class="mobile-card-row highlight">📅 픽업: ${order.pickupDate} ${order.pickupTime}</div>
+                
+                <div class="card-body-premium">
+                    <div class="info-row">📅 배송일: 2025-12-25 (예시)</div>
+                    <div class="info-row">⏰ 픽업 시간: ${order.pickupTime || '미지정'}</div>
+                    <div class="product-tags">
+                        ${productTagsHtml}
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-action" onclick="updateStatus(${index}, '주문확인')">💬 주문확인</button>
+                    <button class="btn-action" onclick="updateStatus(${index}, '입금확인')">💬 입금확인</button>
+                    <button class="btn-action" onclick="updateStatus(${index}, '픽업대기')">💬 완성알림</button>
                 </div>
             `;
             mobileListView.appendChild(card);
