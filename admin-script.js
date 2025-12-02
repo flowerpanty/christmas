@@ -517,24 +517,104 @@ function closeModal() {
     document.getElementById('order-modal').classList.add('hidden');
 }
 
-// Update Order Status (Note: This requires backend support to actually update the sheet)
-window.updateOrderStatus = function (index) {
+// Update Order Status (Backend Integration)
+window.updateOrderStatus = async function (index) {
     const newStatus = document.getElementById(`status-select-${index}`).value;
+    const order = filteredOrders[index];
 
-    // Update in memory
-    filteredOrders[index].status = newStatus;
-    const originalIndex = allOrders.findIndex(o => o.timestamp === filteredOrders[index].timestamp);
-    if (originalIndex !== -1) {
-        allOrders[originalIndex].status = newStatus;
+    if (!confirm(`"${order.name}"님의 주문 상태를 "${newStatus}"(으)로 변경하시겠습니까?`)) {
+        return;
     }
 
-    // Note: In a real implementation, you would send this update to the backend
-    // For now, this is just a client-side update
-    alert(`상태가 "${newStatus}"로 변경되었습니다.\n\n참고: 실제 Google Sheets 업데이트는 수동으로 해야 합니다.`);
+    const btn = document.querySelector('.btn-update-status');
+    if (btn) {
+        btn.textContent = '업데이트 중...';
+        btn.disabled = true;
+    }
 
-    closeModal();
-    displayOrders(filteredOrders);
-    updateStatistics(allOrders);
+    try {
+        // Send update to backend
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Google Apps Script limitation
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'update_status',
+                timestamp: order.timestamp,
+                status: newStatus
+            })
+        });
+
+        // Update local data immediately (optimistic update)
+        // Note: With no-cors, we can't read the response, so we assume success if no error thrown
+        order.status = newStatus;
+        const originalIndex = allOrders.findIndex(o => o.timestamp === order.timestamp);
+        if (originalIndex !== -1) {
+            allOrders[originalIndex].status = newStatus;
+        }
+
+        alert(`상태가 "${newStatus}"로 변경되었습니다.`);
+        closeModal();
+        displayOrders(filteredOrders);
+        updateStatistics(allOrders);
+
+        // Re-render calendar if it exists
+        if (typeof calendarManager !== 'undefined') {
+            calendarManager.render();
+        }
+
+    } catch (error) {
+        console.error('Error updating status:', error);
+        alert('상태 업데이트 중 오류가 발생했습니다.');
+        if (btn) {
+            btn.textContent = '상태 업데이트';
+            btn.disabled = false;
+        }
+    }
+}
+
+// Toggle Status (Badge Click)
+window.toggleStatus = async function (element, index) {
+    const order = filteredOrders[index];
+    const statuses = ['입금대기', '입금확인', '제작중', '픽업완료'];
+    const currentIndex = statuses.indexOf(order.status);
+    const nextStatus = statuses[(currentIndex + 1) % statuses.length];
+
+    if (confirm(`상태를 "${nextStatus}"(으)로 변경하시겠습니까?`)) {
+        // Reuse the update logic but we need to mock the select element or call API directly
+        // Calling API directly here for cleaner code
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'update_status',
+                    timestamp: order.timestamp,
+                    status: nextStatus
+                })
+            });
+
+            // Optimistic update
+            order.status = nextStatus;
+            const originalIndex = allOrders.findIndex(o => o.timestamp === order.timestamp);
+            if (originalIndex !== -1) {
+                allOrders[originalIndex].status = nextStatus;
+            }
+
+            displayOrders(filteredOrders);
+            updateStatistics(allOrders);
+            if (typeof calendarManager !== 'undefined') {
+                calendarManager.render();
+            }
+
+        } catch (error) {
+            console.error('Error toggling status:', error);
+            alert('상태 변경 실패');
+        }
+    }
 }
 
 // Export to CSV
