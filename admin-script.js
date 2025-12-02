@@ -63,7 +63,7 @@ function setupDashboard() {
     });
 
     // Filters
-    document.getElementById('date-filter').addEventListener('change', applyFilters);
+    // document.getElementById('date-filter').addEventListener('change', applyFilters); // Removed
     document.getElementById('status-filter').addEventListener('change', applyFilters);
     document.getElementById('search-input').addEventListener('input', applyFilters);
 
@@ -121,6 +121,11 @@ async function loadOrders() {
             filteredOrders = [...allOrders];
             displayOrders(filteredOrders);
             updateStatistics(allOrders);
+
+            // Render calendar with loaded data
+            if (calendarManager) {
+                calendarManager.render();
+            }
         } else {
             throw new Error('데이터를 불러오는데 실패했습니다.');
         }
@@ -270,40 +275,30 @@ function updateStatistics(orders) {
 
 // Apply Filters
 function applyFilters() {
-    const dateFilter = document.getElementById('date-filter').value;
-    const statusFilter = document.getElementById('status-filter').value;
-    const searchQuery = document.getElementById('search-input').value.toLowerCase();
+    // const dateValue = document.getElementById('date-filter').value; // Removed
+    const statusValue = document.getElementById('status-filter').value;
+    const searchValue = document.getElementById('search-input').value.toLowerCase();
 
     filteredOrders = allOrders.filter(order => {
-        // Date filter
+        // Date Filter Removed
         let dateMatch = true;
-        if (dateFilter !== 'all') {
-            const orderDate = new Date(order.timestamp);
-            const today = new Date();
-
-            if (dateFilter === 'today') {
-                dateMatch = orderDate.toDateString() === today.toDateString();
-            } else if (dateFilter === 'week') {
-                const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-                dateMatch = orderDate >= weekAgo;
-            } else if (dateFilter === 'month') {
-                dateMatch = orderDate.getMonth() === today.getMonth() &&
-                    orderDate.getFullYear() === today.getFullYear();
-            }
+        dateMatch = orderDate.getMonth() === today.getMonth() &&
+            orderDate.getFullYear() === today.getFullYear();
+    }
         }
 
-        // Status filter
-        const statusMatch = statusFilter === 'all' || order.status === statusFilter;
+// Status filter
+const statusMatch = statusFilter === 'all' || order.status === statusFilter;
 
-        // Search filter
-        const searchMatch = searchQuery === '' ||
-            order.name.toLowerCase().includes(searchQuery) ||
-            order.phone.includes(searchQuery);
+// Search filter
+const searchMatch = searchQuery === '' ||
+    order.name.toLowerCase().includes(searchQuery) ||
+    order.phone.includes(searchQuery);
 
-        return dateMatch && statusMatch && searchMatch;
+return dateMatch && statusMatch && searchMatch;
     });
 
-    displayOrders(filteredOrders);
+displayOrders(filteredOrders);
 }
 
 // Show Order Detail Modal
