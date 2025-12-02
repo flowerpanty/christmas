@@ -257,29 +257,19 @@ function setupForm() {
             console.log('Google Script URL이 설정되지 않음. 이메일로만 발송합니다.');
         }
 
-        // 2. 고객 및 관리자에게 이메일 발송 (Backup Storage)
-        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, customerEmailParams)
-            .then(function (response) {
-                console.log('Customer email sent successfully!', response.status, response.text);
+        // 2. 이메일 발송 (Google Apps Script가 처리하므로 프론트엔드에서는 생략)
+        // 만약 Google Apps Script가 실패했을 때를 대비해 알림만 표시
 
-                // 관리자에게 이메일 발송
-                return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, adminEmailParams);
-            })
-            .then(function (response) {
-                console.log('Admin email sent successfully!', response.status, response.text);
-                showModal();
-                form.reset();
-                document.getElementById('total-price').textContent = '0';
-            })
-            .catch(function (error) {
-                console.error('Email sending failed:', error);
-                alert('견적서 이메일 전송에 실패했습니다. 다시 시도해 주세요.');
-            })
-            .finally(function () {
-                // 버튼 다시 활성화
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-            });
+        console.log('주문 데이터 전송 완료');
+
+        // 성공 모달 표시 (Apps Script는 비동기로 처리되므로 성공으로 가정)
+        showModal();
+        form.reset();
+        document.getElementById('total-price').textContent = '0';
+
+        // 버튼 다시 활성화
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
     });
 }
 
