@@ -138,6 +138,32 @@ body {
     transition: all 0.2s;
 }
 
+.btn-delete-order:disabled {
+    background: #ffc9c9;
+    cursor: not-allowed;
+}
+
+.btn-kakao-send {
+    background: #FEE500;
+    color: #3c1e1e;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-kakao-send:hover {
+    background: #fdd835;
+}
+
+.btn-kakao-send:disabled {
+    background: #fff59d;
+    cursor: not-allowed;
+}
+
 .btn-refresh {
     background: #667eea;
     color: white;
