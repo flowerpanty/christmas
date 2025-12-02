@@ -71,14 +71,22 @@ function setupDashboard() {
     document.getElementById('list-view-btn').addEventListener('click', () => {
         document.getElementById('list-view-btn').classList.add('active');
         document.getElementById('calendar-view-btn').classList.remove('active');
+
         document.querySelector('.table-container').classList.remove('hidden');
+        const mobileList = document.getElementById('mobile-list-view');
+        if (mobileList) mobileList.classList.remove('hidden');
+
         document.getElementById('calendar-view').classList.add('hidden');
     });
 
     document.getElementById('calendar-view-btn').addEventListener('click', () => {
         document.getElementById('calendar-view-btn').classList.add('active');
         document.getElementById('list-view-btn').classList.remove('active');
+
         document.querySelector('.table-container').classList.add('hidden');
+        const mobileList = document.getElementById('mobile-list-view');
+        if (mobileList) mobileList.classList.add('hidden');
+
         document.getElementById('calendar-view').classList.remove('hidden');
         displayCalendarView(filteredOrders);
     });
@@ -126,21 +134,24 @@ async function loadOrders() {
 function displayOrders(orders) {
     const tbody = document.getElementById('orders-tbody');
     const noOrdersEl = document.getElementById('no-orders-message');
-
+    // Clear existing data
     tbody.innerHTML = '';
+    const mobileListView = document.getElementById('mobile-list-view');
+    if (mobileListView) mobileListView.innerHTML = '';
 
     if (orders.length === 0) {
-        noOrdersEl.classList.remove('hidden');
+        const noDataHtml = '<tr><td colspan="9" class="no-orders-message">주문 내역이 없습니다.</td></tr>';
+        tbody.innerHTML = noDataHtml;
+        if (mobileListView) mobileListView.innerHTML = '<div class="no-orders-message">주문 내역이 없습니다.</div>';
         return;
     }
 
-    noOrdersEl.classList.add('hidden');
-
     orders.forEach((order, index) => {
+        // --- Desktop Table Row ---
         const row = document.createElement('tr');
 
-        // 날짜 포맷팅 개선
-        let formattedDate = order.timestamp || '-'; // 기본값으로 표시된 값 사용
+        // 날짜 포맷팅
+        let formattedDate = order.timestamp || '-';
         try {
             const timestamp = new Date(order.timestamp);
             if (!isNaN(timestamp.getTime())) {
@@ -151,7 +162,7 @@ function displayOrders(orders) {
                 formattedDate = `${month}월 ${date}일 ${hours}:${minutes}`;
             }
         } catch (e) {
-            console.error('Date parsing error:', e, order.timestamp);
+            console.error('Date parsing error:', e);
         }
 
         // 상품 요약
@@ -164,17 +175,41 @@ function displayOrders(orders) {
 
         row.innerHTML = `
             <td data-label="주문시간">${formattedDate}</td>
-            <td data-label="주문자"><strong>${order.name}</strong></td>
+            <td data-label="이름">${order.name}</td>
             <td data-label="연락처">${order.phone}</td>
-            <td data-label="상품">${productSummary}</td>
-            <td data-label="금액"><strong>${order.totalPrice}원</strong></td>
+            <td data-label="주문내역">${productSummary}</td>
+            <td data-label="총액">${order.totalPrice}</td>
             <td data-label="픽업일시">${order.pickupDate} ${order.pickupTime}</td>
             <td data-label="입금자">${order.depositor}</td>
-            <td data-label="상태"><span class="status-badge status-${order.status}">${order.status}</span></td>
-            <td data-label="상세"><button class="btn-view-detail" data-index="${index}">상세보기</button></td>
+            <td data-label="입금액">${order.amount}</td>
+            <td data-label="상태"><span class="status-badge status-${order.status}" onclick="event.stopPropagation(); toggleStatus(this, ${index})">${order.status}</span></td>
         `;
 
+        // Row click to open modal
+        row.addEventListener('click', () => showOrderDetail(order, index));
         tbody.appendChild(row);
+
+        // --- Mobile List Card ---
+        if (mobileListView) {
+            const card = document.createElement('div');
+            card.className = 'mobile-order-card';
+            card.onclick = () => showOrderDetail(order, index);
+
+            card.innerHTML = `
+                <div class="mobile-card-header">
+                    <span class="mobile-card-time">${formattedDate}</span>
+                    <span class="status-badge status-${order.status}">${order.status}</span>
+                </div>
+                <div class="mobile-card-body">
+                    <div class="mobile-card-row"><strong>👤 ${order.name}</strong> (${order.depositor})</div>
+                    <div class="mobile-card-row">📞 ${order.phone}</div>
+                    <div class="mobile-card-row">🍪 ${productSummary}</div>
+                    <div class="mobile-card-row">💰 ${order.totalPrice} (입금: ${order.amount})</div>
+                    <div class="mobile-card-row highlight">📅 픽업: ${order.pickupDate} ${order.pickupTime}</div>
+                </div>
+            `;
+            mobileListView.appendChild(card);
+        }
     });
 
     // Add event listeners to detail buttons

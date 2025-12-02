@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="admin-style.css?v=3">
 </head>
 
 <body>
@@ -108,33 +108,38 @@
             <div id="calendar-container"></div>
         </div>
 
-        <!-- Orders Table -->
+        <!-- Orders Table (Desktop) -->
         <div class="table-container">
             <table class="orders-table">
                 <thead>
                     <tr>
                         <th>주문시간</th>
-                        <th>주문자</th>
+                        <th>이름</th>
                         <th>연락처</th>
-                        <th>상품</th>
-                        <th>금액</th>
+                        <th>주문내역</th>
+                        <th>총액</th>
                         <th>픽업일시</th>
                         <th>입금자</th>
+                        <th>입금액</th>
                         <th>상태</th>
-                        <th>상세</th>
                     </tr>
                 </thead>
                 <tbody id="orders-tbody">
-                    <!-- Orders will be loaded here -->
+                    <!-- Orders will be populated here -->
                 </tbody>
             </table>
-            <div id="loading-message" class="loading-message">
-                <div class="spinner"></div>
-                <p>주문 데이터를 불러오는 중...</p>
-            </div>
-            <div id="no-orders-message" class="no-orders-message hidden">
-                <p>주문 내역이 없습니다.</p>
-            </div>
+        </div>
+
+        <!-- Mobile List View (Div-based) -->
+        <div id="mobile-list-view" class="mobile-list-view hidden">
+            <!-- Mobile cards will be populated here -->
+        </div>
+        <div id="loading-message" class="loading-message">
+            <div class="spinner"></div>
+            <p>주문 데이터를 불러오는 중...</p>
+        </div>
+        <div id="no-orders-message" class="no-orders-message hidden">
+            <p>주문 내역이 없습니다.</p>
         </div>
     </div>
 
