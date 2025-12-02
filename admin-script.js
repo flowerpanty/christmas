@@ -139,8 +139,20 @@ function displayOrders(orders) {
     orders.forEach((order, index) => {
         const row = document.createElement('tr');
 
-        const timestamp = new Date(order.timestamp);
-        const formattedDate = `${timestamp.getMonth() + 1}/${timestamp.getDate()} ${timestamp.getHours()}:${String(timestamp.getMinutes()).padStart(2, '0')}`;
+        // 날짜 포맷팅 개선
+        let formattedDate = '-';
+        try {
+            const timestamp = new Date(order.timestamp);
+            if (!isNaN(timestamp.getTime())) {
+                const month = timestamp.getMonth() + 1;
+                const date = timestamp.getDate();
+                const hours = timestamp.getHours();
+                const minutes = String(timestamp.getMinutes()).padStart(2, '0');
+                formattedDate = `${month}월 ${date}일 ${hours}:${minutes}`;
+            }
+        } catch (e) {
+            console.error('Date parsing error:', e, order.timestamp);
+        }
 
         // 상품 요약
         const products = [];
