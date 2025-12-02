@@ -164,6 +164,85 @@ body {
     cursor: not-allowed;
 }
 
+/* Kakao Send Button (Quick) - Table View */
+.btn-kakao-quick {
+    background: #FEE500;
+    color: #3c1e1e;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-kakao-quick:hover {
+    background: #fdd835;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(254, 229, 0, 0.4);
+}
+
+/* Kakao Sent Status */
+.kakao-sent {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #d4edda;
+    color: #155724;
+}
+
+/* Mobile Kakao Button */
+.btn-kakao-mobile {
+    background: #FEE500;
+    color: #3c1e1e;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+
+.btn-kakao-mobile:hover {
+    background: #fdd835;
+    transform: translateY(-1px);
+}
+
+.kakao-sent-mobile {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    background: #d4edda;
+    color: #155724;
+    flex: 1;
+    justify-content: center;
+}
+
+/* Card Actions Container for Mobile */
+.card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+
 .btn-refresh {
     background: #667eea;
     color: white;

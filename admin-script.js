@@ -333,6 +333,14 @@ function displayOrders(orders) {
         if (order.santaPackageQty > 0) products.push(`산타꾸러미 ${order.santaPackageQty}`);
         const productSummary = products.join(', ') || '-';
 
+        // 카카오톡 발송 상태 HTML
+        let kakaoHtml = '';
+        if (order.kakaoSent === 'Y') {
+            kakaoHtml = '<span class="kakao-sent">✅ 발송완료</span>';
+        } else {
+            kakaoHtml = `<button class="btn-kakao-quick" onclick="event.stopPropagation(); sendKakaoFromList(${index})">📤 발송</button>`;
+        }
+
         row.innerHTML = `
             <td data-label="주문시간">${formattedDate}</td>
             <td data-label="이름">${order.name}</td>
@@ -343,6 +351,7 @@ function displayOrders(orders) {
             <td data-label="입금자">${order.depositor}</td>
             <td data-label="입금액">${order.amount}</td>
             <td data-label="상태"><span class="status-badge status-${order.status}" onclick="event.stopPropagation(); toggleStatus(this, ${index})">${order.status}</span></td>
+            <td data-label="카톡발송">${kakaoHtml}</td>
         `;
 
         // Row click to open modal
@@ -364,6 +373,14 @@ function displayOrders(orders) {
             if (order.brookieTreeQty > 0) productTagsHtml += `<span class="product-tag">트리 ${order.brookieTreeQty}개</span>`;
             if (order.brookie2Qty > 0) productTagsHtml += `<span class="product-tag">세트 ${order.brookie2Qty}개</span>`;
             if (order.santaPackageQty > 0) productTagsHtml += `<span class="product-tag">산타꾸러미 ${order.santaPackageQty}개</span>`;
+
+            // 카카오톡 발송 상태 HTML
+            let kakaoMobileHtml = '';
+            if (order.kakaoSent === 'Y') {
+                kakaoMobileHtml = '<span class="kakao-sent-mobile">✅ 발송완료</span>';
+            } else {
+                kakaoMobileHtml = `<button class="btn-kakao-mobile" onclick="event.stopPropagation(); sendKakaoFromList(${index})">📤 카톡발송</button>`;
+            }
 
             card.innerHTML = `
                 <div class="card-header-premium">
@@ -389,7 +406,10 @@ function displayOrders(orders) {
                     <div class="product-tags">
                         ${productTagsHtml}
                     </div>
-                    <button class="btn-detail-mobile" onclick="showOrderDetail(filteredOrders[${index}], ${index})">상세보기</button>
+                    <div class="card-actions">
+                        ${kakaoMobileHtml}
+                        <button class="btn-detail-mobile" onclick="showOrderDetail(filteredOrders[${index}], ${index})">상세보기</button>
+                    </div>
                 </div>
             `;
             mobileListView.appendChild(card);
@@ -573,6 +593,61 @@ window.sendKakaoNotification = async function (index) {
             btn.textContent = '카카오톡 발송';
             btn.disabled = false;
         }
+    }
+}
+
+// Send Kakao From List (without modal)
+window.sendKakaoFromList = async function (index) {
+    const order = filteredOrders[index];
+
+    if (!confirm(`"${order.name}"님에게 주문 접수 알림톡을 발송하시겠습니까?`)) {
+        return;
+    }
+
+    // 상품 요약 생성
+    const products = [];
+    if (order.brookieBearQty > 0) products.push(`브루키(곰돌이) ${order.brookieBearQty}개`);
+    if (order.brookieTreeQty > 0) products.push(`브루키(트리) ${order.brookieTreeQty}개`);
+    if (order.brookie2Qty > 0) products.push(`브루키 세트 ${order.brookie2Qty}개`);
+    if (order.santaPackageQty > 0) products.push(`산타꾸러미 ${order.santaPackageQty}개`);
+    const productSummary = products.join(', ');
+
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'send_alimtalk',
+                timestamp: order.timestamp,
+                name: order.name,
+                phone: order.phone,
+                productSummary: productSummary,
+                pickupMethod: order.pickupMethod,
+                pickupDate: order.pickupDate,
+                pickupTime: order.pickupTime,
+                totalPrice: order.totalPrice
+            })
+        });
+
+        // Optimistic update - 발송 완료로 표시
+        order.kakaoSent = 'Y';
+        const originalIndex = allOrders.findIndex(o => o.timestamp === order.timestamp);
+        if (originalIndex !== -1) {
+            allOrders[originalIndex].kakaoSent = 'Y';
+        }
+
+        // UI 즉시 업데이트
+        displayOrders(filteredOrders);
+        if (typeof calendarManager !== 'undefined') {
+            calendarManager.render();
+        }
+
+        alert('카카오톡 발송 요청을 보냈습니다.\n(성공 여부는 알리고 관리자 페이지에서 확인 가능)');
+
+    } catch (error) {
+        console.error('Error sending Kakao notification:', error);
+        alert('카카오톡 발송 중 오류가 발생했습니다.');
     }
 }
 
