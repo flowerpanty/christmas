@@ -4,24 +4,29 @@ function doGet(e) {
   const data = sheet.getDataRange().getValues();
   
   // 헤더 제외하고 데이터만 가져오기
-  const orders = data.slice(1).map(row => ({
-    timestamp: row[0],
-    name: row[1],
-    email: row[2],
-    phone: row[3],
-    brookieBearQty: row[4],
-    brookieTreeQty: row[5],
-    brookie2Qty: row[6],
-    santaPackageQty: row[7],
-    totalPrice: row[8],
-    pickupMethod: row[9],
-    pickupDate: row[10],
-    pickupTime: row[11],
-    depositor: row[12],
-    amount: row[13],
-    memo: row[14],
-    status: row[15] || '입금대기'
-  }));
+  const orders = data.slice(1).map(row => {
+    // 날짜를 문자열로 변환
+    const timestamp = row[0] instanceof Date ? row[0].toISOString() : row[0];
+    
+    return {
+      timestamp: timestamp,
+      name: row[1],
+      email: row[2],
+      phone: row[3],
+      brookieBearQty: row[4],
+      brookieTreeQty: row[5],
+      brookie2Qty: row[6],
+      santaPackageQty: row[7],
+      totalPrice: row[8],
+      pickupMethod: row[9],
+      pickupDate: row[10],
+      pickupTime: row[11],
+      depositor: row[12],
+      amount: row[13],
+      memo: row[14],
+      status: row[15] || '입금대기'
+    };
+  });
   
   return ContentService.createTextOutput(JSON.stringify({
     result: 'success',
