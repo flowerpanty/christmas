@@ -459,10 +459,170 @@ body {
     background: #5568d3;
 }
 
+/* View Toggle */
+.view-toggle-container {
+    max-width: 1400px;
+    margin: 0 auto 20px;
+    padding: 0 30px;
+    display: flex;
+    gap: 10px;
+}
+
+.view-toggle-btn {
+    flex: 1;
+    padding: 12px 24px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-toggle-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+.view-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+/* Calendar View */
+.calendar-view {
+    max-width: 1400px;
+    margin: 0 auto 30px;
+    padding: 0 30px;
+}
+
+#calendar-container {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.calendar-day {
+    margin-bottom: 30px;
+}
+
+.calendar-day-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px 10px 0 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.calendar-orders {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 0 0 10px 10px;
+}
+
+.calendar-order-card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.calendar-order-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-order-card:last-child {
+    margin-bottom: 0;
+}
+
+.calendar-order-time {
+    font-weight: 700;
+    color: #667eea;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.calendar-order-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.calendar-order-customer {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.calendar-order-product {
+    color: #666;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Mobile Card View (for list view on mobile) */
+@media (max-width: 768px) {
+    .table-container {
+        padding: 0 15px;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .orders-table {
+        display: none;
+    }
+
+    #orders-tbody {
+        display: block;
+    }
+
+    #orders-tbody tr {
+        display: block;
+        background: white;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #orders-tbody td {
+        display: block;
+        padding: 8px 0;
+        border: none;
+        text-align: left !important;
+    }
+
+    #orders-tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #667eea;
+        display: inline-block;
+        min-width: 80px;
+        margin-right: 10px;
+    }
+
+    .loading-message,
+    .no-orders-message {
+        background: white;
+        border-radius: 10px;
+        padding: 40px 20px;
+    }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .dashboard-header h1 {
-        font-size: 22px;
+        font-size: 20px;
     }
 
     .header-actions {
@@ -471,24 +631,68 @@ body {
 
     .header-actions button {
         flex: 1;
-        font-size: 12px;
-        padding: 8px 12px;
+        font-size: 11px;
+        padding: 8px 8px;
     }
 
     .stats-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        padding: 0 15px;
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 15px;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .stat-icon {
+        font-size: 36px;
+    }
+
+    .stat-value {
+        font-size: 24px;
     }
 
     .filters-container {
         flex-direction: column;
+        padding: 0 15px;
     }
 
-    .table-container {
-        overflow-x: auto;
+    .filter-group {
+        min-width: 100%;
     }
 
-    .orders-table {
-        min-width: 1000px;
+    .view-toggle-container {
+        padding: 0 15px;
+    }
+
+    .view-toggle-btn {
+        font-size: 14px;
+        padding: 10px 16px;
+    }
+
+    .calendar-view {
+        padding: 0 15px;
+    }
+
+    #calendar-container {
+        padding: 15px;
+    }
+
+    .calendar-day-header {
+        font-size: 16px;
+        padding: 12px 15px;
+    }
+
+    .calendar-orders {
+        padding: 15px;
+    }
+
+    .calendar-order-card {
+        padding: 12px;
     }
 
     .modal-content {

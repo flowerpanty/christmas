@@ -67,6 +67,22 @@ function setupDashboard() {
     document.getElementById('status-filter').addEventListener('change', applyFilters);
     document.getElementById('search-input').addEventListener('input', applyFilters);
 
+    // View Toggle
+    document.getElementById('list-view-btn').addEventListener('click', () => {
+        document.getElementById('list-view-btn').classList.add('active');
+        document.getElementById('calendar-view-btn').classList.remove('active');
+        document.querySelector('.table-container').classList.remove('hidden');
+        document.getElementById('calendar-view').classList.add('hidden');
+    });
+
+    document.getElementById('calendar-view-btn').addEventListener('click', () => {
+        document.getElementById('calendar-view-btn').classList.add('active');
+        document.getElementById('list-view-btn').classList.remove('active');
+        document.querySelector('.table-container').classList.add('hidden');
+        document.getElementById('calendar-view').classList.remove('hidden');
+        displayCalendarView(filteredOrders);
+    });
+
     // Modal close
     document.getElementById('close-modal').addEventListener('click', closeModal);
     document.getElementById('order-modal').addEventListener('click', (e) => {
@@ -135,15 +151,15 @@ function displayOrders(orders) {
         const productSummary = products.join(', ') || '-';
 
         row.innerHTML = `
-            <td>${formattedDate}</td>
-            <td><strong>${order.name}</strong></td>
-            <td>${order.phone}</td>
-            <td>${productSummary}</td>
-            <td><strong>${order.totalPrice}원</strong></td>
-            <td>${order.pickupDate} ${order.pickupTime}</td>
-            <td>${order.depositor}</td>
-            <td><span class="status-badge status-${order.status}">${order.status}</span></td>
-            <td><button class="btn-view-detail" data-index="${index}">상세보기</button></td>
+            <td data-label="주문시간">${formattedDate}</td>
+            <td data-label="주문자"><strong>${order.name}</strong></td>
+            <td data-label="연락처">${order.phone}</td>
+            <td data-label="상품">${productSummary}</td>
+            <td data-label="금액"><strong>${order.totalPrice}원</strong></td>
+            <td data-label="픽업일시">${order.pickupDate} ${order.pickupTime}</td>
+            <td data-label="입금자">${order.depositor}</td>
+            <td data-label="상태"><span class="status-badge status-${order.status}">${order.status}</span></td>
+            <td data-label="상세"><button class="btn-view-detail" data-index="${index}">상세보기</button></td>
         `;
 
         tbody.appendChild(row);
@@ -352,4 +368,80 @@ function exportToCSV() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+
+// Display Calendar View
+function displayCalendarView(orders) {
+    const calendarContainer = document.getElementById('calendar-container');
+
+    if (orders.length === 0) {
+        calendarContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">주문 내역이 없습니다.</p>';
+        return;
+    }
+
+    // Group orders by pickup date
+    const ordersByDate = {};
+    orders.forEach((order, index) => {
+        const pickupDate = order.pickupDate;
+        if (!ordersByDate[pickupDate]) {
+            ordersByDate[pickupDate] = [];
+        }
+        ordersByDate[pickupDate].push({ ...order, originalIndex: index });
+    });
+
+    // Sort dates
+    const sortedDates = Object.keys(ordersByDate).sort((a, b) => {
+        // Simple date comparison (assuming format "12월 20일")
+        const dateA = a.match(/(\d+)월 (\d+)일/);
+        const dateB = b.match(/(\d+)월 (\d+)일/);
+        if (dateA && dateB) {
+            const monthA = parseInt(dateA[1]);
+            const dayA = parseInt(dateA[2]);
+            const monthB = parseInt(dateB[1]);
+            const dayB = parseInt(dateB[2]);
+            if (monthA !== monthB) return monthB - monthA;
+            return dayB - dayA;
+        }
+        return 0;
+    });
+
+    // Render calendar
+    let html = '';
+    sortedDates.forEach(date => {
+        const dayOrders = ordersByDate[date];
+        html += `
+            <div class="calendar-day">
+                <div class="calendar-day-header">📅 ${date}</div>
+                <div class="calendar-orders">
+        `;
+
+        dayOrders.forEach(order => {
+            const products = [];
+            if (order.brookieBearQty > 0) products.push(`곰돌이 ${order.brookieBearQty}`);
+            if (order.brookieTreeQty > 0) products.push(`트리 ${order.brookieTreeQty}`);
+            if (order.brookie2Qty > 0) products.push(`세트 ${order.brookie2Qty}`);
+            if (order.santaPackageQty > 0) products.push(`산타꾸러미 ${order.santaPackageQty}`);
+            const productSummary = products.join(', ') || '-';
+
+            html += `
+                <div class="calendar-order-card" onclick="showOrderDetail(filteredOrders[${order.originalIndex}], ${order.originalIndex})">
+                    <div class="calendar-order-time">⏰ ${order.pickupTime}</div>
+                    <div class="calendar-order-info">
+                        <div>
+                            <div class="calendar-order-customer">👤 ${order.name}</div>
+                            <div class="calendar-order-product">🍪 ${productSummary}</div>
+                        </div>
+                        <span class="status-badge status-${order.status}">${order.status}</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+    });
+
+    calendarContainer.innerHTML = html;
 }
