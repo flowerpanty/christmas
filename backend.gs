@@ -58,64 +58,78 @@ function doPost(e) {
 
 // 주문 삭제 함수
 function deleteOrder(sheet, data) {
-  const timestamp = data.timestamp;
+  const rowIndex = findOrderRowIndex(sheet, data);
   
-  if (!timestamp) {
-    throw new Error('Timestamp is required');
+  if (rowIndex !== -1) {
+    sheet.deleteRow(rowIndex);
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'success',
+      message: 'Order deleted successfully'
+    })).setMimeType(ContentService.MimeType.JSON);
   }
   
-  const range = sheet.getDataRange();
-  // getDisplayValues()를 사용하여 표시된 텍스트 그대로 비교
-  const values = range.getDisplayValues();
-  
-  // 헤더 제외하고 검색 (Row index 1부터 시작)
-  for (let i = 1; i < values.length; i++) {
-    // Column 0 (A열)이 Timestamp라고 가정
-    if (values[i][0] == timestamp) {
-      // deleteRow(rowPosition) -> 1-based index
-      sheet.deleteRow(i + 1);
-      
-      return ContentService.createTextOutput(JSON.stringify({
-        result: 'success',
-        message: 'Order deleted successfully'
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-  }
-  
-  throw new Error('Order not found: ' + timestamp);
+  throw new Error('Order not found (Delete)');
 }
 
 // 주문 상태 업데이트 함수
 function updateOrderStatus(sheet, data) {
-  const timestamp = data.timestamp;
   const newStatus = data.status;
   
-  if (!timestamp || !newStatus) {
-    throw new Error('Timestamp and status are required');
+  if (!newStatus) {
+    throw new Error('Status is required');
   }
   
+  const rowIndex = findOrderRowIndex(sheet, data);
+  
+  if (rowIndex !== -1) {
+    // Status Column은 16번째 (Index 15, P열)
+    sheet.getRange(rowIndex, 16).setValue(newStatus);
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'success',
+      message: 'Status updated successfully'
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  throw new Error('Order not found (Update)');
+}
+
+// 주문 찾기 헬퍼 함수 (Timestamp OR Name+Phone)
+function findOrderRowIndex(sheet, data) {
+  const timestamp = data.timestamp;
+  const name = data.name;
+  const phone = data.phone;
+  
   const range = sheet.getDataRange();
-  // getDisplayValues()를 사용하여 표시된 텍스트 그대로 비교 (날짜 변환 방지)
   const values = range.getDisplayValues();
   
-  // 헤더 제외하고 검색 (Row index 1부터 시작)
-  for (let i = 1; i < values.length; i++) {
-    // Column 0 (A열)이 Timestamp라고 가정
-    // 문자열 비교 (둘 다 String)
-    if (values[i][0] == timestamp) {
-      // Status Column은 16번째 (Index 15, P열)
-      // getRange(row, column) -> row는 1-based, column은 1-based
-      // i + 1 (헤더 포함 행 번호), 16 (P열)
-      sheet.getRange(i + 1, 16).setValue(newStatus);
-      
-      return ContentService.createTextOutput(JSON.stringify({
-        result: 'success',
-        message: 'Status updated successfully'
-      })).setMimeType(ContentService.MimeType.JSON);
+  // 1. Timestamp로 검색 (가장 정확)
+  if (timestamp) {
+    for (let i = 1; i < values.length; i++) {
+      if (values[i][0] == timestamp) {
+        return i + 1; // 1-based index
+      }
     }
   }
   
-  throw new Error('Order not found: ' + timestamp);
+  // 2. (Fallback) Timestamp가 안 맞으면 Name + Phone으로 검색
+  // 구글 시트의 날짜 형식이 미세하게 달라서 Timestamp 매칭이 실패할 경우를 대비
+  if (name && phone) {
+    for (let i = 1; i < values.length; i++) {
+      // Column 1 (B열): Name, Column 3 (D열): Phone
+      // 공백 제거 후 비교하여 유연성 확보
+      const sheetName = values[i][1].toString().trim();
+      const sheetPhone = values[i][3].toString().trim();
+      const inputName = name.toString().trim();
+      const inputPhone = phone.toString().trim();
+      
+      if (sheetName === inputName && sheetPhone === inputPhone) {
+        return i + 1;
+      }
+    }
+  }
+  
+  return -1;
 }
 
 // 새 주문 생성 함수
