@@ -253,12 +253,4 @@ ${data.memo || '없음'}
       'result': 'success',
       'message': '주문이 성공적으로 저장되었습니다.'
     })).setMimeType(ContentService.MimeType.JSON);
-    
-  } catch (error) {
-    Logger.log('Error in doPost: ' + error.toString());
-    return ContentService.createTextOutput(JSON.stringify({ 
-      'result': 'error', 
-      'error': error.toString() 
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
 }
