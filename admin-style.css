@@ -690,7 +690,8 @@ body {
 .calendar-day {
     background: white;
     min-height: 80px;
-    padding: 6px;
+    padding: 4px;
+    /* Reduced padding */
     cursor: pointer;
     position: relative;
     transition: background 0.2s;
@@ -700,20 +701,25 @@ body {
     background: #f9f9f9;
 }
 
-.calendar-day.selected {
-    background: #e3f2fd;
-    border: 2px solid #2196f3;
-}
-
 .calendar-day.other-month {
-    background: #fafafa;
+    background: #fcfcfc;
     color: #ccc;
 }
 
+.calendar-day.selected {
+    background: #f0f7ff;
+    border: 2px solid #667eea;
+}
+
 .day-number {
-    font-size: 12px;
     font-weight: 600;
+    font-size: 14px;
     margin-bottom: 4px;
+    color: #333;
+}
+
+.other-month .day-number {
+    color: #ddd;
 }
 
 .day-dots {
@@ -721,21 +727,56 @@ body {
     flex-wrap: wrap;
     gap: 2px;
     justify-content: center;
+    /* Center dots */
 }
 
 .day-dot {
     width: 6px;
+    /* Smaller dots */
     height: 6px;
     border-radius: 50%;
-    background: #ff9800;
-    /* Orange for pending */
+    background: #ff6b6b;
+    /* Default: Pending */
 }
 
 .day-dot.completed {
-    background: #4caf50;
+    background: #2ecc71;
+    /* Completed */
 }
 
-/* Green for done */
+/* Mobile Optimization for Calendar */
+@media (max-width: 768px) {
+    .calendar-wrapper {
+        padding: 10px;
+        /* Reduced wrapper padding */
+    }
+
+    .calendar-day {
+        min-height: 50px;
+        /* Reduced height */
+        padding: 2px;
+    }
+
+    .day-number {
+        font-size: 11px;
+        /* Smaller font */
+        margin-bottom: 2px;
+    }
+
+    .day-dot {
+        width: 4px;
+        height: 4px;
+    }
+
+    .calendar-header h2 {
+        font-size: 16px;
+    }
+
+    .calendar-controls button {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
 
 /* Selected Date Details */
 .selected-date-details {
