@@ -38,6 +38,55 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     
+    // Action 분기 처리
+    if (data.action === 'update_status') {
+      return updateOrderStatus(sheet, data);
+    }
+    
+    // 기본: 새로운 주문 생성
+    return createNewOrder(sheet, data);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'error',
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// 주문 상태 업데이트 함수
+function updateOrderStatus(sheet, data) {
+  const timestamp = data.timestamp;
+  const newStatus = data.status;
+  
+  if (!timestamp || !newStatus) {
+    throw new Error('Timestamp and status are required');
+  }
+  
+  const range = sheet.getDataRange();
+  const values = range.getValues();
+  
+  // 헤더 제외하고 검색 (Row index 1부터 시작)
+  for (let i = 1; i < values.length; i++) {
+    // Column 0 (A열)이 Timestamp라고 가정
+    if (values[i][0] == timestamp) {
+      // Status Column은 16번째 (Index 15, P열)
+      // getRange(row, column) -> row는 1-based, column은 1-based
+      // i + 1 (헤더 포함 행 번호), 16 (P열)
+      sheet.getRange(i + 1, 16).setValue(newStatus);
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        result: 'success',
+        message: 'Status updated successfully'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+  
+  throw new Error('Order not found');
+}
+
+// 새 주문 생성 함수
+function createNewOrder(sheet, data) {
     // 1. Google Sheets에 저장 (새로운 상품 구조)
     sheet.appendRow([
       new Date(),
