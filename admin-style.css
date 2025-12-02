@@ -576,6 +576,8 @@ body {
         padding: 0 15px;
         background: transparent;
         box-shadow: none;
+        overflow: visible;
+        /* 모바일에서 목록이 잘리지 않도록 */
     }
 
     .orders-table {
