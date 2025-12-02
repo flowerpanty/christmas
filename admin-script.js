@@ -613,6 +613,7 @@ window.sendKakaoFromList = async function (index) {
     const productSummary = products.join(', ');
 
     try {
+        // 카카오톡 발송에 필요한 최소 정보만 전송 (유령주문 방지)
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -627,6 +628,7 @@ window.sendKakaoFromList = async function (index) {
                 pickupDate: order.pickupDate,
                 pickupTime: order.pickupTime,
                 totalPrice: order.totalPrice
+                // email, depositor, amount 등 주문 생성 관련 필드는 제외
             })
         });
 

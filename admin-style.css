@@ -204,18 +204,18 @@ body {
     background: #FEE500;
     color: #3c1e1e;
     border: none;
-    padding: 10px 16px;
+    padding: 8px 12px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    flex: 1;
     white-space: nowrap;
     min-width: fit-content;
+    flex: 0 0 auto;
 }
 
 .btn-kakao-mobile:hover {
@@ -227,16 +227,15 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 10px 16px;
+    padding: 8px 12px;
     border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
     background: #d4edda;
     color: #155724;
-    flex: 1;
-    justify-content: center;
     white-space: nowrap;
     min-width: fit-content;
+    flex: 0 0 auto;
 }
 
 /* Card Actions Container for Mobile */
@@ -244,6 +243,19 @@ body {
     display: flex;
     gap: 8px;
     margin-top: 12px;
+}
+
+.btn-detail-mobile {
+    flex: 1;
+    padding: 8px 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
 
