@@ -41,6 +41,8 @@ function doPost(e) {
     // Action 분기 처리
     if (data.action === 'update_status') {
       return updateOrderStatus(sheet, data);
+    } else if (data.action === 'delete_order') {
+      return deleteOrder(sheet, data);
     }
     
     // 기본: 새로운 주문 생성
@@ -52,6 +54,35 @@ function doPost(e) {
       message: error.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+// 주문 삭제 함수
+function deleteOrder(sheet, data) {
+  const timestamp = data.timestamp;
+  
+  if (!timestamp) {
+    throw new Error('Timestamp is required');
+  }
+  
+  const range = sheet.getDataRange();
+  // getDisplayValues()를 사용하여 표시된 텍스트 그대로 비교
+  const values = range.getDisplayValues();
+  
+  // 헤더 제외하고 검색 (Row index 1부터 시작)
+  for (let i = 1; i < values.length; i++) {
+    // Column 0 (A열)이 Timestamp라고 가정
+    if (values[i][0] == timestamp) {
+      // deleteRow(rowPosition) -> 1-based index
+      sheet.deleteRow(i + 1);
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        result: 'success',
+        message: 'Order deleted successfully'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+  
+  throw new Error('Order not found: ' + timestamp);
 }
 
 // 주문 상태 업데이트 함수
