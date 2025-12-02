@@ -87,6 +87,10 @@ body {
 .admin-dashboard {
     min-height: 100vh;
     background: #f5f7fa;
+    overflow-y: auto;
+    /* 스크롤 가능하도록 */
+    padding-bottom: 50px;
+    /* 하단 여백 추가 */
 }
 
 .hidden {
@@ -578,6 +582,8 @@ body {
         box-shadow: none;
         overflow: visible;
         /* 모바일에서 목록이 잘리지 않도록 */
+        margin-bottom: 50px;
+        /* 하단 여백 추가 */
     }
 
     .orders-table {
