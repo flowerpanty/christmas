@@ -97,6 +97,8 @@ function doPost(e) {
     } else if (data.action === 'send_alimtalk') {
       Logger.log('카카오톡 발송 요청 감지됨');
       return sendAligoKakao(sheet, data); // sheet 전달 추가
+    } else if (data.action === 'update_kakao_status') {
+      return updateKakaoStatus(sheet, data);
     }
     
     // 기본: 새로운 주문 생성
@@ -443,4 +445,25 @@ ${data.memo || '없음'}
       'result': 'success',
       'message': '주문이 성공적으로 저장되었습니다.'
     })).setMimeType(ContentService.MimeType.JSON);
+    })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// 카카오톡 발송 상태 업데이트 함수 (Railway에서 발송 성공 후 호출)
+function updateKakaoStatus(sheet, data) {
+  const rowIndex = findOrderRowIndex(sheet, data);
+  
+  if (rowIndex !== -1) {
+    // Column 17 (Index 16, Q열)에 'Y' 저장
+    sheet.getRange(rowIndex, 17).setValue('Y');
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      result: 'success',
+      message: 'Kakao status updated'
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({
+    result: 'error',
+    message: 'Order not found for status update'
+  })).setMimeType(ContentService.MimeType.JSON);
 }

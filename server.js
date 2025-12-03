@@ -30,7 +30,7 @@ app.post('/api/send-kakao', async (req, res) => {
         const ALIGO_TPL_CODE = process.env.ALIGO_TPL_CODE || 'UD_8619';
         const ALIGO_SENDER_PHONE = process.env.ALIGO_SENDER_PHONE || '01028667976';
 
-        // 메시지 구성 (템플릿과 정확히 일치)
+        // 메시지 구성
         const message = `[낫띵메터스]
 
 주문 접수 안내드립니다.
@@ -43,10 +43,10 @@ app.post('/api/send-kakao', async (req, res) => {
 
 주문하신 제품은 안내드린 일정에 맞추어 준비해드립니다`;
 
-        // 전화번호 포맷팅 (하이픈 제거)
+        // 전화번호 포맷팅
         const phoneNumber = phone.replace(/[^0-9]/g, '');
 
-        // 버튼 정보 (템플릿에 등록된 2개 버튼)
+        // 버튼 정보
         const buttonInfo = {
             "button": [
                 {
@@ -64,7 +64,7 @@ app.post('/api/send-kakao', async (req, res) => {
             ]
         };
 
-        // 알리고 API 요청
+        // 알리고 API 요청 파라미터
         const params = new URLSearchParams({
             'apikey': ALIGO_APIKEY,
             'userid': ALIGO_USERID,
@@ -78,15 +78,28 @@ app.post('/api/send-kakao', async (req, res) => {
             'button_1': JSON.stringify(buttonInfo)
         });
 
-        const response = await fetch('https://kakaoapi.aligo.in/akv10/alimtalk/send/', {
-            method: 'POST',
+        // Axios 및 Proxy 설정
+        const axios = require('axios');
+        const { HttpsProxyAgent } = require('https-proxy-agent');
+
+        let axiosConfig = {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: params.toString()
-        });
+            }
+        };
 
-        const result = await response.json();
+        // Fixie Proxy 설정 (FIXIE_URL 환경변수가 있을 때만 적용)
+        if (process.env.FIXIE_URL) {
+            console.log('Using Fixie Proxy:', process.env.FIXIE_URL);
+            const httpsAgent = new HttpsProxyAgent(process.env.FIXIE_URL);
+            axiosConfig.httpsAgent = httpsAgent;
+            axiosConfig.proxy = false; // axios 기본 proxy 설정 비활성화
+        } else {
+            console.log('No FIXIE_URL found, sending directly.');
+        }
+
+        const response = await axios.post('https://kakaoapi.aligo.in/akv10/alimtalk/send/', params, axiosConfig);
+        const result = response.data;
 
         console.log('알리고 API 응답:', result);
 

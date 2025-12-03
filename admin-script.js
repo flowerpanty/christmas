@@ -672,39 +672,49 @@ window.sendKakaoFromList = async function (index, btnElement) {
     const productSummary = products.join(', ');
 
     try {
-        // Google Apps Script로 카카오톡 발송 요청
-        // no-cors 모드에서 안정적인 전송을 위해 x-www-form-urlencoded 방식 사용
-        const params = new URLSearchParams();
-        params.append('data', JSON.stringify({
-            action: 'send_alimtalk',
-            timestamp: order.timestamp,
-            name: order.name,
-            phone: order.phone,
-            productSummary: productSummary,
-            pickupMethod: order.pickupMethod,
-            pickupDate: order.pickupDate,
-            pickupTime: order.pickupTime,
-            totalPrice: order.totalPrice
-        }));
-
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
+        // 1. Railway 서버를 통해 알리고 API 호출 (Fixie Proxy 사용)
+        const railwayResponse = await fetch('/api/send-kakao', {
             method: 'POST',
-            // mode: 'no-cors', // CORS 모드로 변경하여 응답 확인
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: params
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: order.name,
+                phone: order.phone,
+                productSummary: productSummary,
+                pickupMethod: order.pickupMethod,
+                pickupDate: order.pickupDate,
+                pickupTime: order.pickupTime,
+                totalPrice: order.totalPrice
+            })
         });
 
-        const result = await response.json();
+        const railwayResult = await railwayResponse.json();
 
-        if (result.result === 'success') {
-            // Optimistic update - 발송 완료로 표시
+        if (railwayResult.success) {
+            // 2. 성공 시 Google Sheets 상태 업데이트 (GAS 호출)
+            // no-cors 모드 사용 (응답 확인 불가하지만 실행됨)
+            const params = new URLSearchParams();
+            params.append('data', JSON.stringify({
+                action: 'update_kakao_status',
+                timestamp: order.timestamp,
+                name: order.name,
+                phone: order.phone
+            }));
+
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                // mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params
+            });
+
+            // Optimistic update
             order.kakaoSent = 'Y';
             const originalIndex = allOrders.findIndex(o => o.timestamp === order.timestamp);
             if (originalIndex !== -1) {
                 allOrders[originalIndex].kakaoSent = 'Y';
             }
 
-            // UI 즉시 업데이트 (전체 렌더링 대신 해당 요소만 변경하여 끊김 방지)
+            // UI 즉시 업데이트
             const updateButtonUI = (button) => {
                 if (button) {
                     const span = document.createElement('span');
@@ -714,31 +724,25 @@ window.sendKakaoFromList = async function (index, btnElement) {
                 }
             };
 
-            // 1. 데스크탑 테이블 버튼 업데이트
             const desktopBtn = document.querySelector(`.orders-table button[data-index="${index}"]`);
             updateButtonUI(desktopBtn);
 
-            // 2. 모바일 리스트 버튼 업데이트
             const mobileBtn = document.querySelector(`.mobile-card-premium button[data-index="${index}"]`);
             updateButtonUI(mobileBtn);
 
-            // 캘린더는 다시 그려도 됨 (현재 뷰에 영향 적음)
             if (typeof calendarManager !== 'undefined') {
                 calendarManager.render();
             }
 
             alert('✅ 카카오톡이 발송되었습니다!');
+
         } else {
-            alert('❌ 발송 실패: ' + result.message);
-            if (btn) {
-                btn.textContent = '📤 발송';
-                btn.disabled = false;
-            }
+            throw new Error(railwayResult.message);
         }
 
     } catch (error) {
         console.error('Error sending Kakao notification:', error);
-        alert('카카오톡 발송 중 오류가 발생했습니다: ' + error.message);
+        alert('카카오톡 발송 실패: ' + error.message);
         if (btn) {
             btn.textContent = '📤 발송';
             btn.disabled = false;
