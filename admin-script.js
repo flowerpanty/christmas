@@ -581,12 +581,18 @@ window.sendKakaoNotification = async function (index) {
 
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
+            // mode: 'no-cors', // CORS 모드로 변경
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: params
         });
 
-        alert('✅ 카카오톡 발송 요청을 보냈습니다!');
+        const result = await response.json();
+
+        if (result.result === 'success') {
+            alert('✅ 카카오톡이 발송되었습니다!');
+        } else {
+            alert('❌ 발송 실패: ' + result.message);
+        }
 
     } catch (error) {
         console.error('Error sending Kakao notification:', error);
@@ -633,25 +639,31 @@ window.sendKakaoFromList = async function (index) {
 
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
+            // mode: 'no-cors', // CORS 모드로 변경하여 응답 확인
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: params
         });
 
-        // Optimistic update - 발송 완료로 표시
-        order.kakaoSent = 'Y';
-        const originalIndex = allOrders.findIndex(o => o.timestamp === order.timestamp);
-        if (originalIndex !== -1) {
-            allOrders[originalIndex].kakaoSent = 'Y';
-        }
+        const result = await response.json();
 
-        // UI 즉시 업데이트
-        displayOrders(filteredOrders);
-        if (typeof calendarManager !== 'undefined') {
-            calendarManager.render();
-        }
+        if (result.result === 'success') {
+            // Optimistic update - 발송 완료로 표시
+            order.kakaoSent = 'Y';
+            const originalIndex = allOrders.findIndex(o => o.timestamp === order.timestamp);
+            if (originalIndex !== -1) {
+                allOrders[originalIndex].kakaoSent = 'Y';
+            }
 
-        alert('✅ 카카오톡 발송 요청을 보냈습니다!');
+            // UI 즉시 업데이트
+            displayOrders(filteredOrders);
+            if (typeof calendarManager !== 'undefined') {
+                calendarManager.render();
+            }
+
+            alert('✅ 카카오톡이 발송되었습니다!');
+        } else {
+            alert('❌ 발송 실패: ' + result.message);
+        }
 
     } catch (error) {
         console.error('Error sending Kakao notification:', error);
