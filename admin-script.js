@@ -309,6 +309,7 @@ function displayOrders(orders) {
     orders.forEach((order, index) => {
         // --- Desktop Table Row ---
         const row = document.createElement('tr');
+        row.dataset.index = index; // Store index for event delegation
 
         // 날짜 포맷팅
         let formattedDate = order.timestamp || '-';
@@ -338,7 +339,8 @@ function displayOrders(orders) {
         if (order.kakaoSent === 'Y') {
             kakaoHtml = '<span class="kakao-sent">✅ 발송완료</span>';
         } else {
-            kakaoHtml = `<button class="btn-kakao-quick" onclick="event.stopPropagation(); sendKakaoFromList(${index})">📤 발송</button>`;
+            // Removed inline onclick, added class 'btn-kakao-list-send'
+            kakaoHtml = `<button class="btn-kakao-quick btn-kakao-list-send" data-index="${index}">📤 발송</button>`;
         }
 
         row.innerHTML = `
@@ -354,14 +356,22 @@ function displayOrders(orders) {
             <td data-label="카톡발송">${kakaoHtml}</td>
         `;
 
-        // Row click to open modal
-        row.addEventListener('click', () => showOrderDetail(order, index));
+        // Row click to open modal (Event Delegation will handle this better, but keeping simple for now)
+        row.addEventListener('click', (e) => {
+            // Prevent modal opening if clicking on specific elements
+            if (e.target.closest('.btn-kakao-list-send') || e.target.closest('.status-badge')) {
+                return;
+            }
+            showOrderDetail(order, index);
+        });
+
         tbody.appendChild(row);
 
         // --- Mobile List Card (Premium Style) ---
         if (mobileListView) {
             const card = document.createElement('div');
             card.className = 'mobile-card-premium';
+            card.dataset.index = index;
 
             // 픽업 뱃지 스타일
             const pickupBadgeClass = order.pickupMethod.includes('퀵') ? 'badge-quick' : 'badge-pickup';
@@ -379,7 +389,8 @@ function displayOrders(orders) {
             if (order.kakaoSent === 'Y') {
                 kakaoMobileHtml = '<span class="kakao-sent-mobile">✅ 발송완료</span>';
             } else {
-                kakaoMobileHtml = `<button class="btn-kakao-mobile" onclick="event.stopPropagation(); sendKakaoFromList(${index})">📤 카톡발송</button>`;
+                // Removed inline onclick, added class 'btn-kakao-list-send'
+                kakaoMobileHtml = `<button class="btn-kakao-mobile btn-kakao-list-send" data-index="${index}">📤 카톡발송</button>`;
             }
 
             card.innerHTML = `
@@ -412,8 +423,35 @@ function displayOrders(orders) {
                     </div>
                 </div>
             `;
+
+            // Add event listener for the send button specifically
+            const sendBtn = card.querySelector('.btn-kakao-list-send');
+            if (sendBtn) {
+                sendBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Stop bubbling to card
+                    sendKakaoFromList(index, sendBtn);
+                });
+            }
+
+            // Card click listener
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.btn-kakao-list-send') || e.target.closest('.status-badge') || e.target.closest('.btn-detail-mobile')) {
+                    return;
+                }
+                showOrderDetail(order, index);
+            });
+
             mobileListView.appendChild(card);
         }
+    });
+
+    // Add event listeners for Desktop buttons after rendering
+    document.querySelectorAll('.orders-table .btn-kakao-list-send').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop bubbling to row
+            const index = parseInt(btn.dataset.index);
+            sendKakaoFromList(index, btn);
+        });
     });
 
     // Ensure mobile list view is visible if in list mode
@@ -606,11 +644,23 @@ window.sendKakaoNotification = async function (index) {
 }
 
 // Send Kakao From List (without modal)
-window.sendKakaoFromList = async function (index) {
+window.sendKakaoFromList = async function (index, btnElement) {
     const order = filteredOrders[index];
 
     if (!confirm(`"${order.name}"님에게 주문 접수 알림톡을 발송하시겠습니까?`)) {
         return;
+    }
+
+    // Use the passed button element or find it if not provided
+    let btn = btnElement;
+    if (!btn) {
+        // Fallback for any legacy calls
+        btn = document.querySelector(`button[data-index="${index}"]`);
+    }
+
+    if (btn) {
+        btn.textContent = '발송 중...';
+        btn.disabled = true;
     }
 
     // 상품 요약 생성
@@ -655,23 +705,22 @@ window.sendKakaoFromList = async function (index) {
             }
 
             // UI 즉시 업데이트 (전체 렌더링 대신 해당 요소만 변경하여 끊김 방지)
+            const updateButtonUI = (button) => {
+                if (button) {
+                    const span = document.createElement('span');
+                    span.className = button.classList.contains('btn-kakao-mobile') ? 'kakao-sent-mobile' : 'kakao-sent';
+                    span.textContent = '✅ 발송완료';
+                    button.parentNode.replaceChild(span, button);
+                }
+            };
+
             // 1. 데스크탑 테이블 버튼 업데이트
-            const desktopBtn = document.querySelector(`button[onclick*="sendKakaoFromList(${index})"]`);
-            if (desktopBtn) {
-                const span = document.createElement('span');
-                span.className = 'kakao-sent';
-                span.textContent = '✅ 발송완료';
-                desktopBtn.parentNode.replaceChild(span, desktopBtn);
-            }
+            const desktopBtn = document.querySelector(`.orders-table button[data-index="${index}"]`);
+            updateButtonUI(desktopBtn);
 
             // 2. 모바일 리스트 버튼 업데이트
-            const mobileBtn = document.querySelectorAll(`.mobile-card-premium button[onclick*="sendKakaoFromList(${index})"]`);
-            mobileBtn.forEach(btn => {
-                const span = document.createElement('span');
-                span.className = 'kakao-sent-mobile';
-                span.textContent = '✅ 발송완료';
-                btn.parentNode.replaceChild(span, btn);
-            });
+            const mobileBtn = document.querySelector(`.mobile-card-premium button[data-index="${index}"]`);
+            updateButtonUI(mobileBtn);
 
             // 캘린더는 다시 그려도 됨 (현재 뷰에 영향 적음)
             if (typeof calendarManager !== 'undefined') {
@@ -681,11 +730,19 @@ window.sendKakaoFromList = async function (index) {
             alert('✅ 카카오톡이 발송되었습니다!');
         } else {
             alert('❌ 발송 실패: ' + result.message);
+            if (btn) {
+                btn.textContent = '📤 발송';
+                btn.disabled = false;
+            }
         }
 
     } catch (error) {
         console.error('Error sending Kakao notification:', error);
         alert('카카오톡 발송 중 오류가 발생했습니다: ' + error.message);
+        if (btn) {
+            btn.textContent = '📤 발송';
+            btn.disabled = false;
+        }
     }
 }
 
