@@ -133,14 +133,19 @@ function sendAligoKakao(sheet, data) {
       'payload': payload
     };
 
+    Logger.log('알리고 API 호출 시작...');
     const response = UrlFetchApp.fetch('https://kakaoapi.aligo.in/akv10/alimtalk/send/', options);
-    const result = JSON.parse(response.getContentText());
+    const responseText = response.getContentText();
+    Logger.log('알리고 API 원본 응답: ' + responseText);
+    
+    const result = JSON.parse(responseText);
     
     // 디버깅용 로그
-    Logger.log('알리고 API 응답: ' + JSON.stringify(result));
-    Logger.log('전송 메시지: ' + message);
+    Logger.log('알리고 API 응답 코드: ' + result.code);
+    Logger.log('알리고 API 응답 메시지: ' + result.message);
 
     if (result.code == 0) { // 성공
+       Logger.log('발송 성공!');
        return ContentService.createTextOutput(JSON.stringify({
         result: 'success',
         message: '카카오톡이 발송되었습니다.'
@@ -155,6 +160,9 @@ function sendAligoKakao(sheet, data) {
     }
 
   } catch (error) {
+    Logger.log('API 요청 중 예외 발생!');
+    Logger.log('에러 내용: ' + error.toString());
+    Logger.log('에러 스택: ' + error.stack);
     return ContentService.createTextOutput(JSON.stringify({
       result: 'error',
       message: 'API 요청 중 오류 발생: ' + error.toString()

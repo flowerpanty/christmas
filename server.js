@@ -4,6 +4,9 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// JSON body parser
+app.use(express.json());
+
 // 캐시 방지 헤더 추가
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
@@ -14,6 +17,81 @@ app.use((req, res, next) => {
 
 // 정적 파일 서빙
 app.use(express.static(__dirname));
+
+// 카카오톡 발송 API
+app.post('/api/send-kakao', async (req, res) => {
+    try {
+        const { name, phone, productSummary, pickupMethod, pickupDate, pickupTime, totalPrice } = req.body;
+
+        // 알리고 API 설정
+        const ALIGO_APIKEY = process.env.ALIGO_APIKEY || 'qyaz1cwfldsvmde36i6345jsfwmei4y7';
+        const ALIGO_USERID = process.env.ALIGO_USERID || 'nsc21';
+        const ALIGO_SENDERKEY = process.env.ALIGO_SENDERKEY || '34e353e21a3ebc567c9df3bc527768d93ace882b';
+        const ALIGO_TPL_CODE = process.env.ALIGO_TPL_CODE || 'UD_8619';
+        const ALIGO_SENDER_PHONE = process.env.ALIGO_SENDER_PHONE || '01028667976';
+
+        // 메시지 구성 (템플릿과 정확히 일치)
+        const message = `[낫띵메터스]
+
+주문 접수 안내드립니다.
+
+고객명: ${name}
+주문내역: ${productSummary}
+수령방법: ${pickupMethod}
+수령일시: ${pickupDate} ${pickupTime}
+총금액: ${totalPrice}원
+
+주문하신 제품은 안내드린 일정에 맞추어 준비해드립니다`;
+
+        // 전화번호 포맷팅 (하이픈 제거)
+        const phoneNumber = phone.replace(/[^0-9]/g, '');
+
+        // 버튼 정보
+        const buttonInfo = {
+            "button": [{
+                "name": "채널추가",
+                "linkType": "AC",
+                "linkTypeName": "채널 추가"
+            }]
+        };
+
+        // 알리고 API 요청
+        const params = new URLSearchParams({
+            'apikey': ALIGO_APIKEY,
+            'userid': ALIGO_USERID,
+            'senderkey': ALIGO_SENDERKEY,
+            'tpl_code': ALIGO_TPL_CODE,
+            'sender': ALIGO_SENDER_PHONE,
+            'receiver_1': phoneNumber,
+            'recvname_1': name,
+            'subject_1': '주문 접수 안내',
+            'message_1': message,
+            'button_1': JSON.stringify(buttonInfo)
+        });
+
+        const response = await fetch('https://kakaoapi.aligo.in/akv10/alimtalk/send/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params.toString()
+        });
+
+        const result = await response.json();
+
+        console.log('알리고 API 응답:', result);
+
+        if (result.code == 0) {
+            res.json({ success: true, message: '카카오톡이 발송되었습니다.' });
+        } else {
+            res.json({ success: false, message: `발송 실패: ${result.message}` });
+        }
+
+    } catch (error) {
+        console.error('카카오톡 발송 에러:', error);
+        res.status(500).json({ success: false, message: 'API 요청 중 오류 발생: ' + error.message });
+    }
+});
 
 // 루트 경로 - index.html
 app.get('/', (req, res) => {
