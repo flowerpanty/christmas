@@ -78,25 +78,14 @@ app.post('/api/send-kakao', async (req, res) => {
             'button_1': JSON.stringify(buttonInfo)
         });
 
-        // Axios 및 Proxy 설정
+        // Axios 설정 (Proxy 제거)
         const axios = require('axios');
-        const { HttpsProxyAgent } = require('https-proxy-agent');
 
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
-
-        // Fixie Proxy 설정 (FIXIE_URL 환경변수가 있을 때만 적용)
-        if (process.env.FIXIE_URL) {
-            console.log('Using Fixie Proxy:', process.env.FIXIE_URL);
-            const httpsAgent = new HttpsProxyAgent(process.env.FIXIE_URL);
-            axiosConfig.httpsAgent = httpsAgent;
-            axiosConfig.proxy = false; // axios 기본 proxy 설정 비활성화
-        } else {
-            console.log('No FIXIE_URL found, sending directly.');
-        }
 
         const response = await axios.post('https://kakaoapi.aligo.in/akv10/alimtalk/send/', params, axiosConfig);
         const result = response.data;
