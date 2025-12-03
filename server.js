@@ -37,20 +37,15 @@ app.post('/api/send-kakao', async (req, res) => {
         // 전화번호 포맷팅
         const phoneNumber = phone.replace(/[^0-9]/g, '');
 
-        // 버튼 정보
+        // 버튼 정보 (템플릿에 1개만 등록되어 있음)
         const buttonInfo = {
             "button": [
-                {
-                    "name": "채널추가",
-                    "linkType": "AC",
-                    "linkTypeName": "채널 추가"
-                },
                 {
                     "name": "더 많은 귀여움 보러가기",
                     "linkType": "WL",
                     "linkTypeName": "웹링크",
                     "linkMo": "https://nothingmatters.co.kr/",
-                    "linkPc": "https://nothingmatters.co.kr/"
+                    "linkPc": "https://example.com"
                 }
             ]
         };
