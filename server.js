@@ -37,23 +37,23 @@ app.post('/api/send-kakao', async (req, res) => {
         // 전화번호 포맷팅
         const phoneNumber = phone.replace(/[^0-9]/g, '');
 
-        // 버튼 정보
-        const buttonInfo = {
-            "button": [
-                {
-                    "name": "채널추가",
-                    "linkType": "AC",
-                    "linkTypeName": "채널 추가"
-                },
-                {
-                    "name": "더 많은 귀여움 보러가기",
-                    "linkType": "WL",
-                    "linkTypeName": "웹링크",
-                    "linkMo": "https://nothingmatters.co.kr/",
-                    "linkPc": "https://nothingmatters.co.kr/"
-                }
-            ]
-        };
+        // 버튼 정보 - 템플릿에 버튼이 없을 수도 있어 일단 제거
+        // const buttonInfo = {
+        //     "button": [
+        //         {
+        //             "name": "채널추가",
+        //             "linkType": "AC",
+        //             "linkTypeName": "채널 추가"
+        //         },
+        //         {
+        //             "name": "더 많은 귀여움 보러가기",
+        //             "linkType": "WL",
+        //             "linkTypeName": "웹링크",
+        //             "linkMo": "https://nothingmatters.co.kr/",
+        //             "linkPc": "https://nothingmatters.co.kr/"
+        //         }
+        //     ]
+        // };
 
         // 알리고 API 요청 파라미터
         const params = new URLSearchParams({
@@ -65,8 +65,8 @@ app.post('/api/send-kakao', async (req, res) => {
             'receiver_1': phoneNumber,
             'recvname_1': name,
             'subject_1': '주문 접수 안내',
-            'message_1': message,
-            'button_1': JSON.stringify(buttonInfo)
+            'message_1': message
+            // 'button_1': JSON.stringify(buttonInfo) // 버튼 제거
         });
 
         // Axios 설정 (IPv4 강제 사용)
