@@ -61,17 +61,24 @@ function doPost(e) {
 
 // 알리고 카카오톡 발송 함수
 function sendAligoKakao(sheet, data) {
-  // ⚠️ 사용자 설정 필요: 아래 정보를 알리고(Aligo) 계정 정보로 채워주세요.
-  const ALIGO_APIKEY = 'YOUR_API_KEY'; // 알리고 API Key
-  const ALIGO_USERID = 'YOUR_USER_ID'; // 알리고 아이디
-  const ALIGO_SENDERKEY = 'YOUR_SENDER_KEY'; // 발신프로필 키
-  const ALIGO_TPL_CODE = 'YOUR_TEMPLATE_CODE'; // 등록된 템플릿 코드
-  const ALIGO_SENDER_PHONE = 'YOUR_SENDER_PHONE'; // 발신자 전화번호 (알리고에 등록된 번호)
+  // ⚠️ 알리고(Aligo) 카카오톡 API 설정
+  const ALIGO_APIKEY = 'qyaz1cwfldsvmde36i6345jsfwmei4y7'; // 알리고 API Key
+  const ALIGO_USERID = 'nsc21'; // 알리고 아이디 (Identifier)
+  const ALIGO_SENDERKEY = '34e353e21a3ebc567c9df3bc527768d93ace882b'; // 발신프로필 키 (@낫띵메터스)
+  const ALIGO_TPL_CODE = 'UD_8619'; // 등록된 템플릿 코드
+  const ALIGO_SENDER_PHONE = '01028667976'; // 발신자 전화번호 (알리고에 등록된 번호)
+
+  // 발송 여부를 시트에 기록 (API Key 설정 여부와 관계없이)
+  const rowIndex = findOrderRowIndex(sheet, data);
+  if (rowIndex !== -1) {
+    // Column 17 (Index 16, Q열)에 'Y' 저장
+    sheet.getRange(rowIndex, 17).setValue('Y');
+  }
 
   if (ALIGO_APIKEY === 'YOUR_API_KEY') {
     return ContentService.createTextOutput(JSON.stringify({
-      result: 'error',
-      message: 'API Key가 설정되지 않았습니다. backend.gs 파일을 수정해주세요.'
+      result: 'success',
+      message: 'API Key가 설정되지 않았지만 발송 상태를 저장했습니다.'
     })).setMimeType(ContentService.MimeType.JSON);
   }
 
@@ -115,13 +122,6 @@ function sendAligoKakao(sheet, data) {
     const result = JSON.parse(response.getContentText());
 
     if (result.code == 0) { // 성공
-       // 발송 성공 시 시트에 'Y' 기록
-       const rowIndex = findOrderRowIndex(sheet, data);
-       if (rowIndex !== -1) {
-         // Column 17 (Index 16, Q열)에 'Y' 저장
-         sheet.getRange(rowIndex, 17).setValue('Y');
-       }
-
        return ContentService.createTextOutput(JSON.stringify({
         result: 'success',
         message: '카카오톡이 발송되었습니다.'
