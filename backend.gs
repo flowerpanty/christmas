@@ -99,13 +99,22 @@ function sendAligoKakao(sheet, data) {
   // 전화번호 포맷팅 (하이픈 제거)
   const phoneNumber = (data.phone || '').replace(/[^0-9]/g, '');
 
-  // 버튼 정보 (템플릿에 있는 "채널 추가" 버튼)
+  // 버튼 정보 (템플릿에 등록된 2개 버튼)
   const buttonInfo = {
-    "button": [{
-      "name": "채널추가",
-      "linkType": "AC",
-      "linkTypeName": "채널 추가"
-    }]
+    "button": [
+      {
+        "name": "채널추가",
+        "linkType": "AC",
+        "linkTypeName": "채널 추가"
+      },
+      {
+        "name": "더 많은 귀여움 보러가기",
+        "linkType": "WL",
+        "linkTypeName": "웹링크",
+        "linkMo": "https://nothingmatters.co.kr/",
+        "linkPc": "https://nothingmatters.co.kr/"
+      }
+    ]
   };
 
   // 알리고 API 요청 파라미터

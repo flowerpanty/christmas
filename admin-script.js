@@ -547,7 +547,7 @@ function closeModal() {
 window.sendKakaoNotification = async function (index) {
     const order = filteredOrders[index];
 
-    if (!confirm(`"${order.name}"님에게 주문접수 알림톡을 발송하시겠습니까?`)) {
+    if (!confirm(`"${order.name}"님에게 주문 접수 알림톡을 발송하시겠습니까?`)) {
         return;
     }
 
@@ -566,10 +566,13 @@ window.sendKakaoNotification = async function (index) {
     const productSummary = products.join(', ');
 
     try {
-        const response = await fetch('/api/send-kakao', {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
+            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                action: 'send_alimtalk',
+                timestamp: order.timestamp,
                 name: order.name,
                 phone: order.phone,
                 productSummary: productSummary,
@@ -580,13 +583,7 @@ window.sendKakaoNotification = async function (index) {
             })
         });
 
-        const result = await response.json();
-
-        if (result.success) {
-            alert('✅ 카카오톡이 발송되었습니다!');
-        } else {
-            alert('❌ 발송 실패: ' + result.message);
-        }
+        alert('✅ 카카오톡 발송 요청을 보냈습니다!');
 
     } catch (error) {
         console.error('Error sending Kakao notification:', error);
@@ -616,11 +613,14 @@ window.sendKakaoFromList = async function (index) {
     const productSummary = products.join(', ');
 
     try {
-        // Railway 서버로 카카오톡 발송 요청
-        const response = await fetch('/api/send-kakao', {
+        // Google Apps Script로 카카오톡 발송 요청
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
+            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                action: 'send_alimtalk',
+                timestamp: order.timestamp,
                 name: order.name,
                 phone: order.phone,
                 productSummary: productSummary,
@@ -631,26 +631,20 @@ window.sendKakaoFromList = async function (index) {
             })
         });
 
-        const result = await response.json();
-
-        if (result.success) {
-            // Optimistic update - 발송 완료로 표시
-            order.kakaoSent = 'Y';
-            const originalIndex = allOrders.findIndex(o => o.timestamp === order.timestamp);
-            if (originalIndex !== -1) {
-                allOrders[originalIndex].kakaoSent = 'Y';
-            }
-
-            // UI 즉시 업데이트
-            displayOrders(filteredOrders);
-            if (typeof calendarManager !== 'undefined') {
-                calendarManager.render();
-            }
-
-            alert('✅ 카카오톡이 발송되었습니다!');
-        } else {
-            alert('❌ 발송 실패: ' + result.message);
+        // Optimistic update - 발송 완료로 표시
+        order.kakaoSent = 'Y';
+        const originalIndex = allOrders.findIndex(o => o.timestamp === order.timestamp);
+        if (originalIndex !== -1) {
+            allOrders[originalIndex].kakaoSent = 'Y';
         }
+
+        // UI 즉시 업데이트
+        displayOrders(filteredOrders);
+        if (typeof calendarManager !== 'undefined') {
+            calendarManager.render();
+        }
+
+        alert('✅ 카카오톡 발송 요청을 보냈습니다!');
 
     } catch (error) {
         console.error('Error sending Kakao notification:', error);
