@@ -41,20 +41,7 @@ app.post('/api/send-kakao', async (req, res) => {
         // 전화번호 포맷팅
         const phoneNumber = phone.replace(/[^0-9]/g, '');
 
-        // 버튼 정보 (템플릿에 등록된 버튼과 일치해야 함)
-        const buttonInfo = {
-            "button": [
-                {
-                    "name": "더 많은 귀여움 보러가기",
-                    "linkType": "WL",
-                    "linkTypeName": "웹링크",
-                    "linkMo": "https://nothingmatters.co.kr/",
-                    "linkPc": "https://example.com"
-                }
-            ]
-        };
-
-        // 알리고 API 요청 파라미터
+        // 알리고 API 요청 파라미터 (버튼 없음)
         const params = new URLSearchParams({
             'apikey': ALIGO_APIKEY,
             'userid': ALIGO_USERID,
@@ -64,8 +51,7 @@ app.post('/api/send-kakao', async (req, res) => {
             'receiver_1': phoneNumber,
             'recvname_1': name,
             'subject_1': '주문 접수 안내',
-            'message_1': message,
-            'button_1': JSON.stringify(buttonInfo)
+            'message_1': message
         });
 
         // Axios 설정 (IPv4 강제 사용)
