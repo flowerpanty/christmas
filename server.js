@@ -78,13 +78,19 @@ app.post('/api/send-kakao', async (req, res) => {
             'button_1': JSON.stringify(buttonInfo)
         });
 
-        // Axios 설정 (Proxy 제거)
+        // Axios 설정 (IPv4 강제 사용)
         const axios = require('axios');
+        const https = require('https');
+
+        const httpsAgent = new https.Agent({
+            family: 4 // IPv4 강제
+        });
 
         let axiosConfig = {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
-            }
+            },
+            httpsAgent: httpsAgent
         };
 
         const response = await axios.post('https://kakaoapi.aligo.in/akv10/alimtalk/send/', params, axiosConfig);
