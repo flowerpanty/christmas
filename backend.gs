@@ -42,31 +42,39 @@ function doPost(e) {
   try {
     let data;
 
-    // 1. postData.contents에서 파싱 시도
-    if (e && e.postData && e.postData.contents) {
+    // 1. parameter에서 파싱 시도 (Form Data로 올 경우 - 가장 일반적)
+    if (e && e.parameter && e.parameter.data) {
       try {
-        data = JSON.parse(e.postData.contents);
-        Logger.log('postData에서 파싱 성공');
+        data = JSON.parse(e.parameter.data);
+        Logger.log('parameter.data에서 파싱 성공');
       } catch (err) {
-        Logger.log('postData 파싱 실패 (JSON 아님): ' + err);
+        Logger.log('parameter.data 파싱 실패: ' + err);
       }
     }
 
-    // 2. parameter에서 파싱 시도 (Form Data로 올 경우)
-    if (!data && e && e.parameter) {
-      // data 파라미터가 있는지 확인 (우리가 보낼 때 data 필드에 넣을 예정)
-      if (e.parameter.data) {
+    // 2. postData.contents에서 파싱 시도 (JSON Body로 올 경우)
+    if (!data && e && e.postData && e.postData.contents) {
+      const contents = e.postData.contents.trim();
+      // JSON 형식인 경우에만 파싱 시도 (단순 문자열이나 폼 데이터인 경우 제외)
+      if (contents.startsWith('{') || contents.startsWith('[')) {
         try {
-          data = JSON.parse(e.parameter.data);
-          Logger.log('parameter.data에서 파싱 성공');
+          data = JSON.parse(contents);
+          Logger.log('postData에서 파싱 성공');
         } catch (err) {
-          Logger.log('parameter.data 파싱 실패: ' + err);
+          Logger.log('postData 파싱 실패: ' + err);
         }
       } else {
-        // 그냥 parameter 자체가 데이터일 수도 있음 (action 등이 바로 들어있는 경우)
-        Logger.log('parameter 직접 사용 시도');
-        data = e.parameter;
+        Logger.log('postData가 JSON 형식이 아님 (파싱 건너뜀): ' + contents.substring(0, 50) + '...');
       }
+    }
+
+    // 3. parameter 자체가 데이터일 경우 (Fallback)
+    if (!data && e && e.parameter) {
+       // action이 있는지 확인하여 유효한 데이터인지 판단
+       if (e.parameter.action) {
+          Logger.log('parameter 직접 사용');
+          data = e.parameter;
+       }
     }
 
     if (!data) {
