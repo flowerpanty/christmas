@@ -93,6 +93,21 @@ app.post('/api/send-kakao', async (req, res) => {
     }
 });
 
+// IP 확인 엔드포인트
+app.get('/api/check-ip', async (req, res) => {
+    try {
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        res.json({
+            success: true,
+            ip: ipData.ip,
+            message: `Railway 서버 IP: ${ipData.ip}`
+        });
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+});
+
 // 루트 경로 - index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
