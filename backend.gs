@@ -82,7 +82,7 @@ function sendAligoKakao(sheet, data) {
     })).setMimeType(ContentService.MimeType.JSON);
   }
 
-  // 템플릿 내용 구성
+  // 템플릿 내용 구성 (알리고 템플릿 UD_8619과 정확히 일치해야 함)
   // #{고객명}, #{상품목록}, #{수령방법}, #{날짜}, #{시간}, #{총금액}
   const message = `[낫띵메터스]
 
@@ -94,10 +94,7 @@ function sendAligoKakao(sheet, data) {
 수령일시: ${data.pickupDate} ${data.pickupTime}
 총금액: ${data.totalPrice}원
 
-주문하신 제품은 안내드린 일정에 맞추어 준비하겠습니다.
-
-낫띵메터스 소식 받기
-(채널 추가 시 알림 및 이벤트 안내)`;
+주문하신 제품은 안내드린 일정에 맞추어 준비해드립니다`;
 
   // 알리고 API 요청 파라미터
   const payload = {
