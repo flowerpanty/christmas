@@ -205,13 +205,32 @@ function setupDashboard() {
         location.reload();
     });
 
-    // IP Check
-    document.getElementById('check-ip-btn').addEventListener('click', checkServerIP);
+    // IP Check Button Injection & Event Listener
+    let checkIpBtn = document.getElementById('check-ip-btn');
+    if (!checkIpBtn) {
+        // If button is missing (e.g. cached HTML), inject it dynamically
+        const headerActions = document.querySelector('.header-actions') || document.querySelector('.admin-actions');
+        if (headerActions) {
+            checkIpBtn = document.createElement('button');
+            checkIpBtn.id = 'check-ip-btn';
+            checkIpBtn.className = 'btn-secondary';
+            checkIpBtn.textContent = 'IP 확인';
+            // Insert as first child
+            headerActions.insertBefore(checkIpBtn, headerActions.firstChild);
+        }
+    }
+
+    if (checkIpBtn) {
+        checkIpBtn.addEventListener('click', checkServerIP);
+    }
 
     // Refresh
-    document.getElementById('refresh-btn').addEventListener('click', () => {
-        loadOrders();
-    });
+    const refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+            loadOrders();
+        });
+    }
 
     // Filters
     // document.getElementById('date-filter').addEventListener('change', applyFilters); // Removed
