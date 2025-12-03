@@ -205,14 +205,12 @@ function setupDashboard() {
         location.reload();
     });
 
+    // IP Check
+    document.getElementById('check-ip-btn').addEventListener('click', checkServerIP);
+
     // Refresh
     document.getElementById('refresh-btn').addEventListener('click', () => {
         loadOrders();
-    });
-
-    // Export CSV
-    document.getElementById('export-btn').addEventListener('click', () => {
-        exportToCSV();
     });
 
     // Filters
@@ -643,6 +641,22 @@ window.sendKakaoNotification = async function (index) {
     }
 }
 
+// Check Server IP
+async function checkServerIP() {
+    try {
+        const response = await fetch('/api/check-ip');
+        const data = await response.json();
+        if (data.success) {
+            alert(`현재 서버 IP: ${data.ip}\n\n알리고 관리자 페이지(https://smartsms.aligo.in/)의 [API 연동설정] 메뉴에서 이 IP가 등록되어 있는지 확인해주세요.`);
+        } else {
+            alert('IP 확인 실패: ' + data.message);
+        }
+    } catch (error) {
+        console.error('IP check error:', error);
+        alert('IP 확인 중 오류가 발생했습니다.');
+    }
+}
+
 // Send Kakao From List (without modal)
 window.sendKakaoFromList = async function (index, btnElement) {
     const order = filteredOrders[index];
@@ -737,12 +751,20 @@ window.sendKakaoFromList = async function (index, btnElement) {
             alert('✅ 카카오톡이 발송되었습니다!');
 
         } else {
-            throw new Error(railwayResult.message);
+            // 상세 에러 메시지 표시
+            let errorMsg = railwayResult.message;
+            if (railwayResult.code) {
+                errorMsg += `\n\n에러 코드: ${railwayResult.code}`;
+                if (railwayResult.code == -102) {
+                    errorMsg += '\n(인증되지 않은 IP입니다. 관리자 페이지에서 IP를 등록해주세요.)';
+                }
+            }
+            throw new Error(errorMsg);
         }
 
     } catch (error) {
         console.error('Error sending Kakao notification:', error);
-        alert('카카오톡 발송 실패: ' + error.message);
+        alert(error.message); // 이미 상세 메시지가 포함되어 있음
         if (btn) {
             btn.textContent = '📤 발송';
             btn.disabled = false;

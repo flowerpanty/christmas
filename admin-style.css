@@ -259,30 +259,21 @@ body {
 }
 
 
-.btn-refresh {
+.btn-secondary {
     background: #667eea;
     color: white;
 }
 
-.btn-refresh:hover {
+.btn-secondary:hover {
     background: #5568d3;
 }
 
-.btn-export {
-    background: #48bb78;
-    color: white;
-}
-
-.btn-export:hover {
-    background: #38a169;
-}
-
-.btn-logout {
+.btn-danger {
     background: #e53e3e;
     color: white;
 }
 
-.btn-logout:hover {
+.btn-danger:hover {
     background: #c53030;
 }
 

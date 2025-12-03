@@ -101,7 +101,12 @@ app.post('/api/send-kakao', async (req, res) => {
         if (result.code == 0) {
             res.json({ success: true, message: '카카오톡이 발송되었습니다.' });
         } else {
-            res.json({ success: false, message: `발송 실패: ${result.message}` });
+            // 실패 시 상세 에러 코드와 메시지 반환
+            res.json({
+                success: false,
+                message: `발송 실패: ${result.message} (코드: ${result.code})`,
+                code: result.code
+            });
         }
 
     } catch (error) {
