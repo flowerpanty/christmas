@@ -35,8 +35,50 @@ function doGet(e) {
 }
 
 function doPost(e) {
+  // 🔥 [디버깅] 상세 로그
+  Logger.log('doPost 호출됨!');
+  Logger.log('전체 이벤트 객체: ' + JSON.stringify(e));
+  
   try {
-    const data = JSON.parse(e.postData.contents);
+    let data;
+
+    // 1. postData.contents에서 파싱 시도
+    if (e && e.postData && e.postData.contents) {
+      try {
+        data = JSON.parse(e.postData.contents);
+        Logger.log('postData에서 파싱 성공');
+      } catch (err) {
+        Logger.log('postData 파싱 실패 (JSON 아님): ' + err);
+      }
+    }
+
+    // 2. parameter에서 파싱 시도 (Form Data로 올 경우)
+    if (!data && e && e.parameter) {
+      // data 파라미터가 있는지 확인 (우리가 보낼 때 data 필드에 넣을 예정)
+      if (e.parameter.data) {
+        try {
+          data = JSON.parse(e.parameter.data);
+          Logger.log('parameter.data에서 파싱 성공');
+        } catch (err) {
+          Logger.log('parameter.data 파싱 실패: ' + err);
+        }
+      } else {
+        // 그냥 parameter 자체가 데이터일 수도 있음 (action 등이 바로 들어있는 경우)
+        Logger.log('parameter 직접 사용 시도');
+        data = e.parameter;
+      }
+    }
+
+    if (!data) {
+      Logger.log('❌ 데이터 없음 (postData 및 parameter 모두 비어있음)');
+      return ContentService.createTextOutput(JSON.stringify({
+        result: 'error',
+        message: 'No data received'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    Logger.log('최종 처리 데이터: ' + JSON.stringify(data));
+    
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     
     // Action 분기 처리
@@ -45,6 +87,7 @@ function doPost(e) {
     } else if (data.action === 'delete_order') {
       return deleteOrder(sheet, data);
     } else if (data.action === 'send_alimtalk') {
+      Logger.log('카카오톡 발송 요청 감지됨');
       return sendAligoKakao(sheet, data); // sheet 전달 추가
     }
     
@@ -52,6 +95,7 @@ function doPost(e) {
     return createNewOrder(sheet, data);
     
   } catch (error) {
+    Logger.log('에러 발생: ' + error.toString());
     return ContentService.createTextOutput(JSON.stringify({
       result: 'error',
       message: error.toString()

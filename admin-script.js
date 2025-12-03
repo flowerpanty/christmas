@@ -566,21 +566,24 @@ window.sendKakaoNotification = async function (index) {
     const productSummary = products.join(', ');
 
     try {
+        const params = new URLSearchParams();
+        params.append('data', JSON.stringify({
+            action: 'send_alimtalk',
+            timestamp: order.timestamp,
+            name: order.name,
+            phone: order.phone,
+            productSummary: productSummary,
+            pickupMethod: order.pickupMethod,
+            pickupDate: order.pickupDate,
+            pickupTime: order.pickupTime,
+            totalPrice: order.totalPrice
+        }));
+
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'send_alimtalk',
-                timestamp: order.timestamp,
-                name: order.name,
-                phone: order.phone,
-                productSummary: productSummary,
-                pickupMethod: order.pickupMethod,
-                pickupDate: order.pickupDate,
-                pickupTime: order.pickupTime,
-                totalPrice: order.totalPrice
-            })
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params
         });
 
         alert('✅ 카카오톡 발송 요청을 보냈습니다!');
@@ -614,21 +617,25 @@ window.sendKakaoFromList = async function (index) {
 
     try {
         // Google Apps Script로 카카오톡 발송 요청
+        // no-cors 모드에서 안정적인 전송을 위해 x-www-form-urlencoded 방식 사용
+        const params = new URLSearchParams();
+        params.append('data', JSON.stringify({
+            action: 'send_alimtalk',
+            timestamp: order.timestamp,
+            name: order.name,
+            phone: order.phone,
+            productSummary: productSummary,
+            pickupMethod: order.pickupMethod,
+            pickupDate: order.pickupDate,
+            pickupTime: order.pickupTime,
+            totalPrice: order.totalPrice
+        }));
+
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'send_alimtalk',
-                timestamp: order.timestamp,
-                name: order.name,
-                phone: order.phone,
-                productSummary: productSummary,
-                pickupMethod: order.pickupMethod,
-                pickupDate: order.pickupDate,
-                pickupTime: order.pickupTime,
-                totalPrice: order.totalPrice
-            })
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params
         });
 
         // Optimistic update - 발송 완료로 표시
