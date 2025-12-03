@@ -32,7 +32,7 @@ app.post('/api/send-kakao', async (req, res) => {
 
         // 메시지 구성
         // 메시지 구성 (템플릿과 정확히 일치해야 함)
-        const message = `[낫띵메터스]\n\n주문 접수 안내드립니다.\n\n고객명: ${name}\n주문내역: ${productSummary}\n수령방법: ${pickupMethod}\n수령일시: ${pickupDate} ${pickupTime}\n총금액: ${totalPrice}원\n\n주문하신 제품은 안내드린 일정에 맞추어 준비해드립니다`;
+        const message = `[낫띵메터스]\n주문 접수 안내드립니다.\n\n고객명: ${name}\n주문내역: ${productSummary}\n수령방법: ${pickupMethod}\n수령일시: ${pickupDate} ${pickupTime}\n총금액: ${totalPrice}원\n\n주문하신 제품은 안내드린 일정에 맞추어 준비해드립니다`;
 
         // 전화번호 포맷팅
         const phoneNumber = phone.replace(/[^0-9]/g, '');
