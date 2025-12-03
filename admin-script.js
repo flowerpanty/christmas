@@ -774,8 +774,11 @@ window.sendKakaoFromList = async function (index, btnElement) {
             let errorMsg = railwayResult.message;
             if (railwayResult.code) {
                 errorMsg += `\n\n에러 코드: ${railwayResult.code}`;
+                if (railwayResult.serverIp) {
+                    errorMsg += `\n실제 발송 IP: ${railwayResult.serverIp}`;
+                }
                 if (railwayResult.code == -102) {
-                    errorMsg += '\n(인증되지 않은 IP입니다. 관리자 페이지에서 IP를 등록해주세요.)';
+                    errorMsg += '\n(인증되지 않은 IP입니다. 위 "실제 발송 IP"를 알리고 관리자 페이지에 등록해주세요.)';
                 }
             }
             throw new Error(errorMsg);

@@ -93,6 +93,16 @@ app.post('/api/send-kakao', async (req, res) => {
             httpsAgent: httpsAgent
         };
 
+        // 0. 발송 전 실제 나가는 IP 확인 (디버깅용)
+        let currentOutgoingIp = '확인불가';
+        try {
+            const ipCheckResponse = await axios.get('https://api.ipify.org', { httpsAgent: httpsAgent });
+            currentOutgoingIp = ipCheckResponse.data;
+            console.log('알리고 발송 시도 IP:', currentOutgoingIp);
+        } catch (ipError) {
+            console.error('IP 확인 실패:', ipError.message);
+        }
+
         const response = await axios.post('https://kakaoapi.aligo.in/akv10/alimtalk/send/', params, axiosConfig);
         const result = response.data;
 
@@ -105,7 +115,8 @@ app.post('/api/send-kakao', async (req, res) => {
             res.json({
                 success: false,
                 message: `발송 실패: ${result.message} (코드: ${result.code})`,
-                code: result.code
+                code: result.code,
+                serverIp: currentOutgoingIp
             });
         }
 
