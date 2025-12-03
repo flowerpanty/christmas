@@ -99,6 +99,15 @@ function sendAligoKakao(sheet, data) {
   // 전화번호 포맷팅 (하이픈 제거)
   const phoneNumber = (data.phone || '').replace(/[^0-9]/g, '');
 
+  // 버튼 정보 (템플릿에 있는 "채널 추가" 버튼)
+  const buttonInfo = {
+    "button": [{
+      "name": "채널추가",
+      "linkType": "AC",
+      "linkTypeName": "채널 추가"
+    }]
+  };
+
   // 알리고 API 요청 파라미터
   const payload = {
     'apikey': ALIGO_APIKEY,
@@ -107,8 +116,10 @@ function sendAligoKakao(sheet, data) {
     'tpl_code': ALIGO_TPL_CODE,
     'sender': ALIGO_SENDER_PHONE,
     'receiver_1': phoneNumber,
+    'recvname_1': data.name,  // 수신자 이름
     'subject_1': '주문 접수 안내',
-    'message_1': message
+    'message_1': message,
+    'button_1': JSON.stringify(buttonInfo)
     // 'testmode_yn': 'Y' // 테스트 모드 필요시 주석 해제 (실제 발송 안됨)
   };
   
