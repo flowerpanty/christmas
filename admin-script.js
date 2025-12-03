@@ -654,8 +654,26 @@ window.sendKakaoFromList = async function (index) {
                 allOrders[originalIndex].kakaoSent = 'Y';
             }
 
-            // UI 즉시 업데이트
-            displayOrders(filteredOrders);
+            // UI 즉시 업데이트 (전체 렌더링 대신 해당 요소만 변경하여 끊김 방지)
+            // 1. 데스크탑 테이블 버튼 업데이트
+            const desktopBtn = document.querySelector(`button[onclick*="sendKakaoFromList(${index})"]`);
+            if (desktopBtn) {
+                const span = document.createElement('span');
+                span.className = 'kakao-sent';
+                span.textContent = '✅ 발송완료';
+                desktopBtn.parentNode.replaceChild(span, desktopBtn);
+            }
+
+            // 2. 모바일 리스트 버튼 업데이트
+            const mobileBtn = document.querySelectorAll(`.mobile-card-premium button[onclick*="sendKakaoFromList(${index})"]`);
+            mobileBtn.forEach(btn => {
+                const span = document.createElement('span');
+                span.className = 'kakao-sent-mobile';
+                span.textContent = '✅ 발송완료';
+                btn.parentNode.replaceChild(span, btn);
+            });
+
+            // 캘린더는 다시 그려도 됨 (현재 뷰에 영향 적음)
             if (typeof calendarManager !== 'undefined') {
                 calendarManager.render();
             }
