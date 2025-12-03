@@ -96,6 +96,9 @@ function sendAligoKakao(sheet, data) {
 
 주문하신 제품은 안내드린 일정에 맞추어 준비해드립니다`;
 
+  // 전화번호 포맷팅 (하이픈 제거)
+  const phoneNumber = (data.phone || '').replace(/[^0-9]/g, '');
+
   // 알리고 API 요청 파라미터
   const payload = {
     'apikey': ALIGO_APIKEY,
@@ -103,11 +106,15 @@ function sendAligoKakao(sheet, data) {
     'senderkey': ALIGO_SENDERKEY,
     'tpl_code': ALIGO_TPL_CODE,
     'sender': ALIGO_SENDER_PHONE,
-    'receiver_1': data.phone,
+    'receiver_1': phoneNumber,
     'subject_1': '주문 접수 안내',
-    'message_1': message,
+    'message_1': message
     // 'testmode_yn': 'Y' // 테스트 모드 필요시 주석 해제 (실제 발송 안됨)
   };
+  
+  // 디버깅용: 전송할 데이터 로그
+  Logger.log('전송 payload: ' + JSON.stringify(payload));
+  Logger.log('수신자 전화번호: ' + phoneNumber);
 
   try {
     const options = {
@@ -117,6 +124,10 @@ function sendAligoKakao(sheet, data) {
 
     const response = UrlFetchApp.fetch('https://kakaoapi.aligo.in/akv10/alimtalk/send/', options);
     const result = JSON.parse(response.getContentText());
+    
+    // 디버깅용 로그
+    Logger.log('알리고 API 응답: ' + JSON.stringify(result));
+    Logger.log('전송 메시지: ' + message);
 
     if (result.code == 0) { // 성공
        return ContentService.createTextOutput(JSON.stringify({
@@ -124,6 +135,8 @@ function sendAligoKakao(sheet, data) {
         message: '카카오톡이 발송되었습니다.'
       })).setMimeType(ContentService.MimeType.JSON);
     } else {
+       // 에러 상세 로그
+       Logger.log('발송 실패 - 코드: ' + result.code + ', 메시지: ' + result.message);
        return ContentService.createTextOutput(JSON.stringify({
         result: 'error',
         message: '발송 실패: ' + result.message
