@@ -445,7 +445,6 @@ ${data.memo || '없음'}
       'result': 'success',
       'message': '주문이 성공적으로 저장되었습니다.'
     })).setMimeType(ContentService.MimeType.JSON);
-    })).setMimeType(ContentService.MimeType.JSON);
 }
 
 // 카카오톡 발송 상태 업데이트 함수 (Railway에서 발송 성공 후 호출)
