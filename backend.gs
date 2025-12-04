@@ -119,7 +119,7 @@ function sendAligoKakao(sheet, data) {
   const ALIGO_APIKEY = 'qyaz1cwfldsvmde36i6345jsfwmei4y7'; // 알리고 API Key
   const ALIGO_USERID = 'nsc21'; // 알리고 아이디 (Identifier)
   const ALIGO_SENDERKEY = '34e353e21a3ebc567c9df3bc527768d93ace882b'; // 발신프로필 키 (@낫띵메터스)
-  const ALIGO_TPL_CODE = 'UD_8619'; // 등록된 템플릿 코드
+  const ALIGO_TPL_CODE = 'UD_9510'; // 등록된 템플릿 코드
   const ALIGO_SENDER_PHONE = '01028667976'; // 발신자 전화번호 (알리고에 등록된 번호)
 
   // 발송 여부를 시트에 기록 (API Key 설정 여부와 관계없이)
@@ -136,7 +136,7 @@ function sendAligoKakao(sheet, data) {
     })).setMimeType(ContentService.MimeType.JSON);
   }
 
-  // 템플릿 내용 구성 (알리고 템플릿 UD_8619과 정확히 일치해야 함)
+  // 템플릿 내용 구성 (알리고 템플릿 UD_9510과 정확히 일치해야 함)
   // #{고객명}, #{상품목록}, #{수령방법}, #{날짜}, #{시간}, #{총금액}
   const message = `[낫띵메터스]
 
