@@ -27,7 +27,7 @@ app.post('/api/send-kakao', async (req, res) => {
         const ALIGO_APIKEY = process.env.ALIGO_APIKEY || 'qyaz1cwfldsvmde36i6345jsfwmei4y7';
         const ALIGO_USERID = process.env.ALIGO_USERID || 'nsc21';
         const ALIGO_SENDERKEY = process.env.ALIGO_SENDERKEY || '34e353e21a3ebc567c9df3bc527768d93ace882b';
-        const ALIGO_TPL_CODE = process.env.ALIGO_TPL_CODE || 'UD_8619';
+        const ALIGO_TPL_CODE = process.env.ALIGO_TPL_CODE || 'UD_9510';
         const ALIGO_SENDER_PHONE = process.env.ALIGO_SENDER_PHONE || '01028667976';
 
         // 메시지 구성
