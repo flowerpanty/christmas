@@ -101,6 +101,31 @@ function setupPriceCalculation() {
 function setupForm() {
     const form = document.getElementById('order-form');
 
+    // 전화번호 자동 포맷팅
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); // 숫자만 추출
+
+            // 최대 11자리까지만 허용
+            if (value.length > 11) {
+                value = value.slice(0, 11);
+            }
+
+            // 010-xxxx-xxxx 형식으로 포맷팅
+            let formatted = '';
+            if (value.length <= 3) {
+                formatted = value;
+            } else if (value.length <= 7) {
+                formatted = value.slice(0, 3) + '-' + value.slice(3);
+            } else {
+                formatted = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7);
+            }
+
+            e.target.value = formatted;
+        });
+    }
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
