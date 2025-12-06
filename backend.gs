@@ -439,7 +439,7 @@ ${data.memo || '없음'}
 ===========================================
     `.trim();
 
-    GmailApp.sendEmail('flowerpanty@gmail.com', adminSubject, adminBody);
+    GmailApp.sendEmail('flowerpanty@gmail.com,betterbetters@kakao.com', adminSubject, adminBody);
 
     return ContentService.createTextOutput(JSON.stringify({ 
       'result': 'success',
