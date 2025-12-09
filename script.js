@@ -178,6 +178,20 @@ function setupForm() {
             return;
         }
 
+        // 12월 25일 예약 시간 제한 검증 (12:00까지만 접수)
+        if (pickupDate === '12월 25일') {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const currentTimeInMinutes = currentHour * 60 + currentMinute;
+            const cutoffTime = 12 * 60; // 12:00 = 720분
+
+            if (currentTimeInMinutes >= cutoffTime) {
+                alert('12월 25일 주문은 당일 12:00(정오)까지만 접수 가능합니다.\n다른 날짜를 선택해 주세요.');
+                return;
+            }
+        }
+
 
         console.log('Preparing to send quote email...');
 
