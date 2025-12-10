@@ -247,7 +247,7 @@ function setupForm() {
         };
 
         // Google Apps Script URL (사용자가 배포 후 입력해야 함)
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKr77_KPQdoepPLqXynNbn6-3uGBodISlh2PMMzYqLwXlXaDuRcwsMgZWWLxxYi-g/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwVKQ3mrkeXtXKXZRc6qT3zAZdz4XzFfRiANFNlI0N0kNux2B8b5Gzjd3CMXOKC3U/exec';
 
         // 버튼 비활성화 및 텍스트 변경
         const submitBtn = form.querySelector('.submit-btn');
