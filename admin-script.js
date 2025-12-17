@@ -1,6 +1,6 @@
 // Admin Dashboard Script
 const ADMIN_PASSWORD = 'nothingmatters2024';
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwVKQ3mrkeXtXKXZRc6qT3zAZdz4XzFfRiANFNlI0N0kNux2B8b5Gzjd3CMXOKC3U/exec'; // 사용자가 배포 후 입력
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwi3kFCh0eYF0v7oBSC-CY9AQyXYUW1rGC8vhhA1Julbj86BhGNsQJnKQMxCaf50n0/exec'; // 사용자가 배포 후 입력
 
 let allOrders = [];
 let filteredOrders = [];
